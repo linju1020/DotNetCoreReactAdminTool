@@ -1,3 +1,4 @@
+var pg = require('pg');
 var fs = require('fs');
 var readlineSync = require('readline-sync');
 
@@ -9,10 +10,10 @@ let argv = yargs
   .usage('Usage: --s <filename>')
   .epilog('copyright')
   .help().argv;
+//console.log(argv);
 
 var path = process.cwd();
 var dbfilepath = path + '/db.json';
-//console.log(argv);
 
 if (fs.existsSync(dbfilepath)) {
   //console.log('存在');
@@ -33,7 +34,90 @@ if (fs.existsSync(dbfilepath)) {
 if (argv._.length == 0) {
   var data = fs.readFileSync(dbfilepath).toString();
   if (data == null || data.length < 1) console.log('没有任何数据链接信息！');
-  else console.log(data);
+  else {
+    var datas = JSON.parse(data);
+    console.table(datas);
+    var connection_index = readlineSync
+      .question('Choose connection by index > ')
+      .trim();
+    connection_index = parseInt(connection_index);
+    if (isNaN(connection_index)) {
+      console.log('index Must be a number');
+      return;
+    }
+    if (connection_index >= datas.length) {
+      console.log('index Out of range');
+      return;
+    }
+    var choose_connection = datas[connection_index];
+    //console.log(choose_connection);
+    //数据库配置
+    //tcp://用户名：密码@localhost/数据库名
+    var conString = `postgres://${choose_connection['userid']}:${choose_connection['userpwd']}@${choose_connection['ip']}:${choose_connection['port']}/${choose_connection['database']}`;
+    //console.log(`conString:${conString}`);
+    var client = new pg.Client(conString);
+    client.connect(function (isErr) {
+      if (isErr) {
+        console.log('connect error:' + isErr.message);
+        client.end();
+        return;
+      }
+      client.query(
+        "select tablename from pg_tables where schemaname='public'",
+        [],
+        function (isErr, rst) {
+          if (isErr) {
+            console.log('query error:' + isErr.message);
+          } else {
+            var tablenames = rst.rows;
+            console.table(tablenames);
+
+            var table_index = readlineSync
+              .question('Choose table by index > ')
+              .trim();
+            table_index = parseInt(table_index);
+            if (isNaN(table_index)) {
+              console.log('index Must be a number');
+              return;
+            }
+            if (table_index >= tablenames.length) {
+              console.log('index Out of range');
+              return;
+            }
+
+            console.log(tablenames[table_index]);
+
+            var tablefildsql =
+              ' SELECT a.attnum,' +
+              'a.attname AS field,' +
+              't.typname AS type,' +
+              'a.attlen AS length,' +
+              'a.atttypmod AS lengthvar,' +
+              'a.attnotnull AS notnull,' +
+              'b.description AS comment' +
+              'FROM pg_class c,' +
+              'pg_attribute a' +
+              'LEFT OUTER JOIN pg_description b ON a.attrelid=b.objoid AND a.attnum = b.objsubid,' +
+              'pg_type t' +
+              `WHERE c.relname = '${tablenames[table_index].tablename}'` +
+              'and a.attnum > 0' +
+              'and a.attrelid = c.oid' +
+              'and a.atttypid = t.oid' +
+              'ORDER BY a.attnum;';
+
+            client.query(tablefildsql, [], function (isErr2, rst2) {
+              if (isErr2) {
+                console.log('query error:' + isErr2.message);
+              } else {
+                console.table(rst2.rows);
+              }
+            });
+          }
+          client.end();
+        }
+      );
+    });
+  }
   return;
 }
 
@@ -89,15 +173,78 @@ if (argv._.length == 1) {
       console.log('     Database:' + database);
       console.log('     UserId:' + userid);
       console.log('     UserPWD:' + userpwd);
-      var confirm = readlineSync.question('y or n (Default: y) > ').trim();
+      var confirm = readlineSync
+        .question('y or n (Default: y) > ')
+        .trim()
+        .toLowerCase();
+      if (confirm == '') confirm = 'y';
       if (confirm != 'y') return;
       else {
-        var data1 = {ip, prot, database, userid, userpwd};
-        
+        var new_data = {ip, port, database, userid, userpwd};
+        var old_data = fs.readFileSync(dbfilepath).toString().trim();
+        var datas = old_data.length < 1 ? [] : JSON.parse(old_data);
+        datas.push(new_data);
+        //console.log(JSON.stringify(datas));
+        fs.writeFile(dbfilepath, JSON.stringify(datas), (err) => {
+          if (err != null) {
+            console.log(`保存数据出错:${err}`);
+            return;
+          } else console.log(`Add BD Connection Success`);
+        });
       }
 
       break;
     case 'cleardb':
+      console.log('Please confirm clear all database connections!');
+      var confirm = readlineSync
+        .question('y or n (Default: n) > ')
+        .trim()
+        .toLowerCase();
+      if (confirm == '') confirm = 'n';
+      if (confirm == 'y') {
+        fs.writeFile(dbfilepath, '', (err) => {
+          if (err != null) {
+            console.log(`清空数据出错:${err}`);
+            return;
+          } else console.log(`Clear all database connections Success`);
+        });
+      }
+      break;
+    case 'removedb':
+      var index = argv['i'];
+      if (index == undefined) {
+        console.log('Please confirm index number. Example: removedb 1');
+        return;
+      }
+      index = parseInt(index);
+      if (isNaN(index)) {
+        console.log('index Must be a number');
+        return;
+      }
+
+      var old_data = fs.readFileSync(dbfilepath).toString().trim();
+      var datas = old_data.length < 1 ? [] : JSON.parse(old_data);
+      if (index >= datas.length) {
+        console.log('index Out of range');
+        return;
+      }
+
+      console.log('Please confirm remove the following connection:');
+      console.table(datas[index]);
+      var confirm = readlineSync
+        .question('y or n (Default: n) > ')
+        .trim()
+        .toLowerCase();
+      if (confirm == '') confirm = 'n';
+      if (confirm == 'y') {
+        datas.splice(index, 1); //remove one
+        fs.writeFile(dbfilepath, JSON.stringify(datas), (err) => {
+          if (err != null) {
+            console.log(`保存数据出错:${err}`);
+            return;
+          } else console.log(`Remove BD Connection Success`);
+        });
+      }
       break;
   }
   return;
