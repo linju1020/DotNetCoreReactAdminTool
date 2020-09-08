@@ -1,8 +1,10 @@
-var pg = require('pg');
 var fs = require('fs');
 var readlineSync = require('readline-sync');
+var DB = require('./db');
+var PowerShell = require('./powershell');
 
 const yargs = require('yargs');
+const {exit} = require('process');
 let argv = yargs
   .alias('s', 'save')
   .example('--s a.txt', '设置源文件')
@@ -23,7 +25,7 @@ if (fs.existsSync(dbfilepath)) {
   fs.writeFile(dbfilepath, '', (err) => {
     if (err != null) {
       console.log(`初始化文件出错:${err}`);
-      return;
+      exit();
     }
   });
 }
@@ -33,92 +35,125 @@ if (fs.existsSync(dbfilepath)) {
 
 if (argv._.length == 0) {
   var data = fs.readFileSync(dbfilepath).toString();
-  if (data == null || data.length < 1) console.log('没有任何数据链接信息！');
-  else {
-    var datas = JSON.parse(data);
-    console.table(datas);
-    var connection_index = readlineSync
-      .question('Choose connection by index > ')
-      .trim();
-    connection_index = parseInt(connection_index);
-    if (isNaN(connection_index)) {
-      console.log('index Must be a number');
-      return;
-    }
-    if (connection_index >= datas.length) {
-      console.log('index Out of range');
-      return;
-    }
-    var choose_connection = datas[connection_index];
-    //console.log(choose_connection);
-    //数据库配置
-    //tcp://用户名：密码@localhost/数据库名
-    var conString = `postgres://${choose_connection['userid']}:${choose_connection['userpwd']}@${choose_connection['ip']}:${choose_connection['port']}/${choose_connection['database']}`;
-    //console.log(`conString:${conString}`);
-    var client = new pg.Client(conString);
-    client.connect(function (isErr) {
-      if (isErr) {
-        console.log('connect error:' + isErr.message);
-        client.end();
-        return;
+  if (data == null || data.length < 1) {
+    console.log('没有任何数据链接信息！');
+  } else {
+    (async function () {
+      var datas = JSON.parse(data);
+      console.table(datas);
+      var connection_index = readlineSync
+        .question('Choose connection by index > ')
+        .trim();
+      connection_index = parseInt(connection_index);
+      if (isNaN(connection_index)) {
+        console.log('index Must be a number');
+        exit();
       }
-      client.query(
-        "select tablename from pg_tables where schemaname='public'",
-        [],
-        function (isErr, rst) {
-          if (isErr) {
-            console.log('query error:' + isErr.message);
-          } else {
-            var tablenames = rst.rows;
-            console.table(tablenames);
+      if (connection_index >= datas.length) {
+        console.log('index Out of range');
+        exit();
+      }
+      var choose_connection = datas[connection_index];
+      var conString = `postgres://${choose_connection['userid']}:${choose_connection['userpwd']}@${choose_connection['ip']}:${choose_connection['port']}/${choose_connection['database']}`;
 
-            var table_index = readlineSync
-              .question('Choose table by index > ')
-              .trim();
-            table_index = parseInt(table_index);
-            if (isNaN(table_index)) {
-              console.log('index Must be a number');
-              return;
-            }
-            if (table_index >= tablenames.length) {
-              console.log('index Out of range');
-              return;
-            }
+      var client = new DB();
 
-            console.log(tablenames[table_index]);
-
-            var tablefildsql =
-              ' SELECT a.attnum,' +
-              'a.attname AS field,' +
-              't.typname AS type,' +
-              'a.attlen AS length,' +
-              'a.atttypmod AS lengthvar,' +
-              'a.attnotnull AS notnull,' +
-              'b.description AS comment' +
-              'FROM pg_class c,' +
-              'pg_attribute a' +
-              'LEFT OUTER JOIN pg_description b ON a.attrelid=b.objoid AND a.attnum = b.objsubid,' +
-              'pg_type t' +
-              `WHERE c.relname = '${tablenames[table_index].tablename}'` +
-              'and a.attnum > 0' +
-              'and a.attrelid = c.oid' +
-              'and a.atttypid = t.oid' +
-              'ORDER BY a.attnum;';
-
-            client.query(tablefildsql, [], function (isErr2, rst2) {
-              if (isErr2) {
-                console.log('query error:' + isErr2.message);
-              } else {
-                console.table(rst2.rows);
-              }
-            });
-          }
-          client.end();
+      var tablenames;
+      if (await client.setConnectStr(conString)) {
+        tablenames = await client.getRows(
+          "select tablename from pg_tables where schemaname='public'",
+          []
+        );
+        if (tablenames != null) {
+          console.table(tablenames);
+        } else {
+          exit();
         }
-      );
-    });
+      }
+
+      var table_index = readlineSync
+        .question('Choose table by index > ')
+        .trim();
+      table_index = parseInt(table_index);
+      if (isNaN(table_index)) {
+        console.log('index Must be a number');
+        exit();
+      }
+      if (table_index >= tablenames.length) {
+        console.log('index Out of range');
+        exit();
+      }
+
+      var choose_tablename = tablenames[table_index].tablename;
+      console.log(choose_tablename);
+
+      var tablefields;
+      if (await client.setConnectStr(conString)) {
+        var tablefildsql =
+          'SELECT a.attnum,' +
+          ' a.attname AS field,' +
+          ' t.typname AS type,' +
+          ' a.attlen AS length,' +
+          ' a.atttypmod AS lengthvar,' +
+          ' a.attnotnull AS notnull,' +
+          ' b.description AS comment' +
+          ' FROM pg_class c,pg_attribute a' +
+          ' LEFT OUTER JOIN pg_description b ON a.attrelid=b.objoid AND a.attnum = b.objsubid,' +
+          ' pg_type t' +
+          ` WHERE c.relname = '${choose_tablename}'` +
+          ' and a.attnum > 0' +
+          ' and a.attrelid = c.oid' +
+          ' and a.atttypid = t.oid' +
+          ' ORDER BY a.attnum;';
+        tablefields = await client.getRows(tablefildsql, []);
+        if (tablefields != null) {
+          console.table(tablefields);
+        } else {
+          exit();
+        }
+      }
+
+      console.log('Choose the following function:');
+      console.log('0. Create React-Admin template code');
+      var function_number = readlineSync
+        .question('Choose function by number (Default 0) > ')
+        .trim();
+      if (function_number == '') function_number = 0;
+      function_number = parseInt(function_number);
+      if (isNaN(function_number)) {
+        console.log('Must be a number');
+        exit();
+      }
+      switch (function_number) {
+        case 0:
+          // Create Template CODE    choose_tablename tablefields
+
+          var folderpath = await new PowerShell().BrowseForFolder('选择文件夹');
+          console.log(`folderpath: ` + folderpath);
+
+          // 创建文件夹
+          fs.mkdir(folderpath + '/' + choose_tablename, function (err) {
+            // 如果有错 抛出错误
+            if (err) {
+              console.log('创建文件夹失败');
+              exit();
+            }
+          });
+
+          new PowerShell().SavaFile(
+            path,
+            'index.cs',
+            [[/_tablename_/gim, choose_tablename]],
+            folderpath + '/' + choose_tablename
+          );
+
+          break;
+        default:
+          console.log('number Out of range');
+          break;
+      }
+    })();
   }
-  return;
 }
 
 if (argv._.length == 1) {
@@ -178,7 +213,7 @@ if (argv._.length == 1) {
         .trim()
         .toLowerCase();
       if (confirm == '') confirm = 'y';
-      if (confirm != 'y') return;
+      if (confirm != 'y') exit();
       else {
         var new_data = {ip, port, database, userid, userpwd};
         var old_data = fs.readFileSync(dbfilepath).toString().trim();
@@ -188,7 +223,7 @@ if (argv._.length == 1) {
         fs.writeFile(dbfilepath, JSON.stringify(datas), (err) => {
           if (err != null) {
             console.log(`保存数据出错:${err}`);
-            return;
+            exit();
           } else console.log(`Add BD Connection Success`);
         });
       }
@@ -205,7 +240,7 @@ if (argv._.length == 1) {
         fs.writeFile(dbfilepath, '', (err) => {
           if (err != null) {
             console.log(`清空数据出错:${err}`);
-            return;
+            exit();
           } else console.log(`Clear all database connections Success`);
         });
       }
@@ -214,19 +249,19 @@ if (argv._.length == 1) {
       var index = argv['i'];
       if (index == undefined) {
         console.log('Please confirm index number. Example: removedb 1');
-        return;
+        exit();
       }
       index = parseInt(index);
       if (isNaN(index)) {
         console.log('index Must be a number');
-        return;
+        exit();
       }
 
       var old_data = fs.readFileSync(dbfilepath).toString().trim();
       var datas = old_data.length < 1 ? [] : JSON.parse(old_data);
       if (index >= datas.length) {
         console.log('index Out of range');
-        return;
+        exit();
       }
 
       console.log('Please confirm remove the following connection:');
@@ -241,11 +276,11 @@ if (argv._.length == 1) {
         fs.writeFile(dbfilepath, JSON.stringify(datas), (err) => {
           if (err != null) {
             console.log(`保存数据出错:${err}`);
-            return;
+            exit();
           } else console.log(`Remove BD Connection Success`);
         });
       }
       break;
   }
-  return;
+  exit();
 }
