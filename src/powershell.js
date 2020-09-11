@@ -12,7 +12,7 @@ function PowerShell() {
       child.stdout.on('data', function (data) {
         //console.log('Powershell Data: ' + data);
         if (data.length > 0) {
-          resolve(data.toString().replace('\r','').replace('\n',''));
+          resolve(data.toString().replace('\r', '').replace('\n', ''));
         }
       });
       child.stderr.on('data', function (data) {
@@ -28,7 +28,7 @@ function PowerShell() {
     return promise;
   };
 
-  this.SavaFile = (basepath, templatefilename, replaces, savefolder) => {
+  this.SavaFile = (basepath, templatefilename, choose_tablename, replaces, savefolder) => {
     var Template_file = fs
       .readFileSync(basepath + '/template/' + templatefilename)
       .toString();
@@ -38,13 +38,10 @@ function PowerShell() {
       new_Template_file = Template_file.replace(replaces[i][0], replaces[i][1]);
     }
     console.log(new_Template_file);
-    var newfilepath = savefolder + '/' + templatefilename;
-    console.log(`newfilepath:`+newfilepath);
-    fs.writeFile(newfilepath, new_Template_file, (err) => {
-      if (err != null) {
-        console.log(`保存出错:${err}`);
-      }
-    });
+    var newfilepath = savefolder + '/' + templatefilename.replace('tablename', choose_tablename);
+    //console.log(`newfilepath:`+newfilepath);
+    if (!fs.existsSync(savefolder)) fs.mkdirSync(savefolder);
+    fs.writeFileSync(newfilepath, new_Template_file);
   };
 }
 

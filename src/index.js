@@ -1,8 +1,13 @@
+#!/usr/bin/env node
+
 const yargs = require('yargs');
 var fs = require('fs');
 var DB = require('./db');
 var PowerShell = require('./powershell');
-const { readinput_str, readinput_int, alertAndQuit } = require('./comm');
+const { sleep, readinput_str, readinput_int, alertAndQuit, deleteFolderRecursive,
+  createFieldsCodes, createFieldsCodesRemoveKey,
+  writeFieldsCodes, writeFieldsCodesRemoveKey
+} = require('./comm');
 
 
 
@@ -31,6 +36,8 @@ if (argv._.length == 0) {
   } else {
     (async function () {
       var datas = JSON.parse(data);
+      if (datas.length < 1)
+        alertAndQuit('没有任何数据链接信息！');
       console.table(datas);
       var connection_index = readinput_int({ tip: 'Choose connection by index', max: datas.length });
       var choose_connection = datas[connection_index];
@@ -88,23 +95,139 @@ if (argv._.length == 0) {
         case 0:
           // Create Template CODE    choose_tablename tablefields
 
+          var ModelFieldCode = createFieldsCodes(tablefields);
+          var ModelFieldCodeRemoveKey = createFieldsCodesRemoveKey(tablefields);
+          var WriteFieldCode = writeFieldsCodes(tablefields);
+          var WriteFieldCodeRemoveKey = writeFieldsCodesRemoveKey(tablefields);
+
           var folderpath = await new PowerShell().BrowseForFolder('选择文件夹');
           console.log(`folderpath: ` + folderpath);
 
+          deleteFolderRecursive(folderpath + '/' + choose_tablename);
+          await sleep(50);
           // 创建文件夹
-          fs.mkdir(folderpath + '/' + choose_tablename, function (err) {
-            // 如果有错 抛出错误
-            if (err) {
-              alertAndQuit('创建文件夹失败');
-            }
-          });
+          fs.mkdirSync(folderpath + '/' + choose_tablename);
+          await sleep(20);
+          fs.mkdirSync(folderpath + '/' + choose_tablename + '/React-admin');
+          await sleep(20);
+          fs.mkdirSync(folderpath + '/' + choose_tablename + '/Domain');
+          await sleep(20);
+          fs.mkdirSync(folderpath + '/' + choose_tablename + '/CommandsQuerys');
+          await sleep(20);
 
           new PowerShell().SavaFile(
             path,
-            'index.cs',
+            'tablename.js', choose_tablename,
+            [[/_tablename_/gim, choose_tablename]],
+            folderpath + '/' + choose_tablename + '/React-admin'
+          );
+          new PowerShell().SavaFile(
+            path,
+            'tablename_ResetOrderNum.js', choose_tablename,
+            [[/_tablename_/gim, choose_tablename]],
+            folderpath + '/' + choose_tablename + '/React-admin'
+          );
+
+          //c#
+          new PowerShell().SavaFile(
+            path,
+            'CMStablenameController.cs', choose_tablename,
             [[/_tablename_/gim, choose_tablename]],
             folderpath + '/' + choose_tablename
           );
+          new PowerShell().SavaFile(
+            path,
+            'Domain/tablename.cs',
+            choose_tablename,
+            [
+              [/_tablename_/gim, choose_tablename],
+              [/_ModelFieldCode_/gim, ModelFieldCode]
+            ],
+            folderpath + '/' + choose_tablename
+          );
+
+          new PowerShell().SavaFile(
+            path,
+            'CommandsQuerys/Create.cs', choose_tablename,
+            [
+              [/_tablename_/gim, choose_tablename],
+              [/_ModelFieldCode_/gim, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gim, ModelFieldCodeRemoveKey],
+              [/_WriteFieldCode_/gim, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gim, WriteFieldCodeRemoveKey]
+            ],
+            folderpath + '/' + choose_tablename
+          );
+          new PowerShell().SavaFile(
+            path,
+            'CommandsQuerys/Delete.cs', choose_tablename,
+            [
+              [/_tablename_/gim, choose_tablename],
+              [/_ModelFieldCode_/gim, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gim, ModelFieldCodeRemoveKey],
+              [/_WriteFieldCode_/gim, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gim, WriteFieldCodeRemoveKey]
+            ],
+            folderpath + '/' + choose_tablename
+          );
+          new PowerShell().SavaFile(
+            path,
+            'CommandsQuerys/DeleteMany.cs', choose_tablename,
+            [
+              [/_tablename_/gim, choose_tablename],
+              [/_ModelFieldCode_/gim, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gim, ModelFieldCodeRemoveKey],
+              [/_WriteFieldCode_/gim, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gim, WriteFieldCodeRemoveKey]
+            ],
+            folderpath + '/' + choose_tablename
+          );
+          new PowerShell().SavaFile(
+            path,
+            'CommandsQuerys/GetList.cs', choose_tablename,
+            [
+              [/_tablename_/gim, choose_tablename],
+              [/_ModelFieldCode_/gim, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gim, ModelFieldCodeRemoveKey],
+              [/_WriteFieldCode_/gim, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gim, WriteFieldCodeRemoveKey]
+            ],
+            folderpath + '/' + choose_tablename
+          );
+          new PowerShell().SavaFile(
+            path,
+            'CommandsQuerys/GetMany.cs', choose_tablename,
+            [
+              [/_tablename_/gim, choose_tablename],
+              [/_ModelFieldCode_/gim, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gim, ModelFieldCodeRemoveKey],
+              [/_WriteFieldCode_/gim, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gim, WriteFieldCodeRemoveKey]
+            ],
+            folderpath + '/' + choose_tablename
+          );
+          new PowerShell().SavaFile(
+            path,
+            'CommandsQuerys/GetOne.cs', choose_tablename,
+            [
+              [/_tablename_/gim, choose_tablename],
+              [/_ModelFieldCode_/gim, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gim, ModelFieldCodeRemoveKey],
+              [/_WriteFieldCode_/gim, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gim, WriteFieldCodeRemoveKey]
+            ],
+            folderpath + '/' + choose_tablename
+          );
+          new PowerShell().SavaFile(
+            path,
+            'CommandsQuerys/ResetOrderNum.cs', choose_tablename,
+            [
+              [/_tablename_/gim, choose_tablename],
+              [/_ModelFieldCode_/gim, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gim, ModelFieldCodeRemoveKey],
+              [/_WriteFieldCode_/gim, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gim, WriteFieldCodeRemoveKey]
+            ],
+            folderpath + '/' + choose_tablename
+          );
+          new PowerShell().SavaFile(
+            path,
+            'CommandsQuerys/Update.cs', choose_tablename,
+            [
+              [/_tablename_/gim, choose_tablename],
+              [/_ModelFieldCode_/gim, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gim, ModelFieldCodeRemoveKey],
+              [/_WriteFieldCode_/gim, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gim, WriteFieldCodeRemoveKey]
+            ],
+            folderpath + '/' + choose_tablename
+          );
+
+          alertAndQuit('Create Template Success!');
 
           break;
         default:
@@ -142,7 +265,7 @@ if (argv._.length == 1) {
       console.log('     UserId:' + userid);
       console.log('     UserPWD:' + userpwd);
       var confirm = readinput_str({ tip: 'y or n', defaultValue: 'y' });
-      if (confirm != 'y') alertAndQuit('');
+      if (confirm.toLowerCase() != 'y') alertAndQuit('');
       else {
         var new_data = { ip, port, database, userid, userpwd };
         var old_data = fs.readFileSync(dbfilepath).toString().trim();
@@ -156,7 +279,7 @@ if (argv._.length == 1) {
     case 'cleardb':
       console.log('Please confirm clear all database connections!');
       var confirm = readinput_str({ tip: 'y or n', defaultValue: 'n' });
-      if (confirm == 'y') {
+      if (confirm.toLowerCase() == 'y') {
         fs.writeFileSync(dbfilepath, '');
       }
       break;
@@ -179,7 +302,7 @@ if (argv._.length == 1) {
       console.log('Please confirm remove the following connection:');
       console.table(datas[index]);
       var confirm = readinput_str({ tip: 'y or n', defaultValue: 'n' });
-      if (confirm == 'y') {
+      if (confirm.toLowerCase() == 'y') {
         datas.splice(index, 1); //remove one
         fs.writeFileSync(dbfilepath, JSON.stringify(datas));
       }
