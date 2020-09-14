@@ -5,6 +5,14 @@
 ```shell
 npm install -g dotnetcorereactadmintool
 ```
+## 查看版本
+```shell
+netcoretmt --version
+```
+## 查看帮助
+```shell
+netcoretmt --help
+```
 ## 卸载
 该工具是Nodejs命令行工具，安装方式如下（需全局安装）
 ```shell

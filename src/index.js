@@ -14,11 +14,11 @@ const {
 
 
 let argv = yargs
-  .alias('s', 'save')
-  .example('--s a.txt', '设置源文件')
+  //.alias('s', 'save')
+  .example('Example Url ->', 'https://www.npmjs.com/package/dotnetcorereactadmintool')
 
   //.usage('Usage: --s <filename>')
-  .epilog('copyright')
+  .epilog('copyright @ linju1020@sina.com')
   .help().argv;
 //console.log(argv);
 
