@@ -14,7 +14,6 @@ netcoretmt --version
 netcoretmt --help
 ```
 ## 卸载
-该工具是Nodejs命令行工具，安装方式如下（需全局安装）
 ```shell
 npm uninstall -g dotnetcorereactadmintool
 ```
