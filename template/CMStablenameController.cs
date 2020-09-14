@@ -4,18 +4,19 @@ using Microsoft.AspNetCore.Mvc;
 using @@@.CMSAPI.ApiGroup;
 using Microsoft.Extensions.Logging;
 using MediatR;
-using @@@.CMSAPI.Models.CommandsQuerys._tablename_;
+using @@@.CMSAPI.Models.CommandsQuerys._Tablename_;
+using @@@.CMSAPI.Controllers.Base;
 
 namespace @@@.CMSAPI.Controllers.CMS
 {
     [Route("[controller]")]
     [ApiGroup(ApiGroupNames.CMSCenter)]
-    public class cms_tablename_Controller : @@@Controller
+    public class CMS_tablename_Controller : MyCMSController
     {
-        private readonly ILogger<_tablename_Controller> logger;
+        private readonly ILogger<CMS_tablename_Controller> logger;
         private readonly IMediator mediator;
 
-        public cms_tablename_Controller(ILogger<_tablename_Controller> logger, IMediator mediator)
+        public CMS_tablename_Controller(ILogger<CMS_tablename_Controller> logger, IMediator mediator)
         {
             this.logger = logger;
             this.mediator = mediator;

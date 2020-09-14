@@ -7,6 +7,7 @@ import {
   TextField,
   Filter,
   TextInput,
+  NumberField,
   EditButton,
   Edit,
   Create,
@@ -17,9 +18,12 @@ import {
   SaveButton,
   Toolbar,
   TopToolbar,
+  ReferenceField,
+  ReferenceInput, 
+  SelectInput
 } from 'react-admin';
 import { ArrowBack } from '@material-ui/icons';
-import _tablename_ResetOrderNum from './_tablename_ResetOrderNum';
+import ResetOrderNum from './_tablename__ResetOrderNum';
 
 {/* 
   <Resource name="CMS_tablename_" list={_tablename_List} create={_tablename_Create} edit={_tablename_Edit} />
@@ -41,7 +45,7 @@ export const _tablename_List = (props) => {
   const AssetBulkActionButtons = (props) => {
     return (
       <Fragment>
-        <_tablename_ResetOrderNum label="重置排序" {...props} />
+        <ResetOrderNum label="重置排序" {...props} />
         <BulkDeleteWithConfirmButton
           {...props}
           confirmTitle="删除确认"
@@ -54,7 +58,7 @@ export const _tablename_List = (props) => {
   return (
     <List
       {...props}
-      title="省份列表"
+      title="XX列表"
       sort={{ field: 'ordernum', order: 'DESC' }}
       filters={<Filters />}
       bulkActionButtons={<AssetBulkActionButtons />}

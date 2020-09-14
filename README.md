@@ -1,78 +1,36 @@
-# DotNetCoreReactAdminTool
-DotNetCoreReactAdminTool
+# DotNetCoreReactAdminTool （模板代码生成工具 .NetCore + React-Admin）
 
+## 安装或升级
+该工具是Nodejs命令行工具，安装方式如下（需全局安装）
+```shell
+npm install -g dotnetcorereactadmintool
+```
+## 卸载
+该工具是Nodejs命令行工具，安装方式如下（需全局安装）
+```shell
+npm uninstall -g dotnetcorereactadmintool
+```
 
+## 怎样配置数据库链接信息
 
-``` javascript
-    //console.log(choose_connection);
-    //数据库配置
-    //tcp://用户名：密码@localhost/数据库名
-    var conString = `postgres://${choose_connection['userid']}:${choose_connection['userpwd']}@${choose_connection['ip']}:${choose_connection['port']}/${choose_connection['database']}`;
-    //console.log(`conString:${conString}`);
+- 添加数据库链接信息
+```shell
+netcoretmt adddb
+```
 
-    
+- 移除数据库链接信息
+```shell
+netcoretmt removedb -i <index>
+```
 
-    return;
-    var client = new pg.Client(conString);
-    client.connect(function (isErr) {
-      if (isErr) {
-        console.log('connect error:' + isErr.message);
-        client.end();
-        return;
-      }
-      client.query(
-        "select tablename from pg_tables where schemaname='public'",
-        [],
-        function (isErr, rst) {
-          if (isErr) {
-            console.log('query error:' + isErr.message);
-          } else {
-            var tablenames = rst.rows;
-            console.table(tablenames);
+- 清除所有数据库链接信息
+```shell
+netcoretmt cleardb
+```
 
-            var table_index = readlineSync
-              .question('Choose table by index > ')
-              .trim();
-            table_index = parseInt(table_index);
-            if (isNaN(table_index)) {
-              console.log('index Must be a number');
-              return;
-            }
-            if (table_index >= tablenames.length) {
-              console.log('index Out of range');
-              return;
-            }
+## 怎样使用
 
-            console.log(tablenames[table_index]);
-
-            var tablefildsql =
-              ' SELECT a.attnum,' +
-              'a.attname AS field,' +
-              't.typname AS type,' +
-              'a.attlen AS length,' +
-              'a.atttypmod AS lengthvar,' +
-              'a.attnotnull AS notnull,' +
-              'b.description AS comment' +
-              'FROM pg_class c,' +
-              'pg_attribute a' +
-              'LEFT OUTER JOIN pg_description b ON a.attrelid=b.objoid AND a.attnum = b.objsubid,' +
-              'pg_type t' +
-              `WHERE c.relname = '${tablenames[table_index].tablename}'` +
-              'and a.attnum > 0' +
-              'and a.attrelid = c.oid' +
-              'and a.atttypid = t.oid' +
-              'ORDER BY a.attnum;';
-
-            client.query(tablefildsql, [], function (isErr2, rst2) {
-              if (isErr2) {
-                console.log('query error:' + isErr2.message);
-              } else {
-                console.table(rst2.rows);
-              }
-            });
-          }
-          client.end();
-        }
-      );
-    });
+- 查看和生成模板代码
+```shell
+netcoretmt
 ```

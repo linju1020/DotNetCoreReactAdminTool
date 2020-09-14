@@ -10,6 +10,11 @@ async function sleep(millisecond) {
     })
 }
 
+function getHomeCrossplatform() {
+    if (process.env.HOME) return process.env.HOME; // Linux
+    return process.env.USERPROFILE; // Windows
+}
+
 function readinput_str({ tip = 'Please enter', defaultValue = '', required = false }) {
     let val = '';
     while (true) {
@@ -22,14 +27,18 @@ function readinput_str({ tip = 'Please enter', defaultValue = '', required = fal
     return val;
 }
 
-function readinput_int({ tip = 'Please enter', defaultValue = 0, min = 0, max = 99999 }) {
+function readinput_int({ tip = 'Please enter', defaultValue = NaN, min = -99999, max = 99999 }) {
     let val = '';
-    var defaultTxt = defaultValue.length > 0 ? ` (Default: ${defaultValue}) ` : ' ';
-    val = readlineSync.question(`${tip}${defaultTxt}> `).trim();
-    if (val == '') val = defaultValue.toString();
-    if (isNaN(parseInt(val))) val = defaultValue.toString();
-    if (parseInt(val) < min) val = min.toString();
-    if (parseInt(val) > max) val = max.toString();
+    while (true) {
+        var defaultTxt = !isNaN(defaultValue) ? ` (Default: ${defaultValue}) ` : ' ';
+        val = readlineSync.question(`${tip}${defaultTxt}> `).trim();
+        if (val == '') val = defaultValue;
+        else if (isNaN(parseInt(val))) val = defaultValue;
+        if (isNaN(val)) continue;
+        if (parseInt(val) < min) val = min.toString();
+        if (parseInt(val) > max) val = max.toString();
+        break;
+    }
     return parseInt(val);
 }
 
@@ -120,6 +129,7 @@ var writeFieldsCodesRemoveKey = function (tablefields) {
 }
 
 module.exports = {
+    getHomeCrossplatform,
     sleep, readinput_str, readinput_int, deleteFolderRecursive, alertAndQuit,
     createFieldsCodes, createFieldsCodesRemoveKey,
     writeFieldsCodes, writeFieldsCodesRemoveKey

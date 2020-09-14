@@ -12,7 +12,7 @@ import { Info } from '@material-ui/icons';
 
 
 //功能
-const _tablename_ResetOrderNum = (props) => {
+const ResetOrderNum = (props) => {
     const { label, basePath, selectedIds } = props;
     const basePathName = basePath.replace('/', '');
     const refresh = useRefresh();
@@ -57,4 +57,4 @@ const _tablename_ResetOrderNum = (props) => {
     );
 };
 
-export default _tablename_ResetOrderNum;
+export default ResetOrderNum;

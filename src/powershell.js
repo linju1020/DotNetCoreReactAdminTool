@@ -35,7 +35,7 @@ function PowerShell() {
     //console.log(Template_file);
     var new_Template_file = Template_file;
     for (var i in replaces) {
-      new_Template_file = Template_file.replace(replaces[i][0], replaces[i][1]);
+      new_Template_file = new_Template_file.replace(replaces[i][0], replaces[i][1]);
     }
     console.log(new_Template_file);
     var newfilepath = savefolder + '/' + templatefilename.replace('tablename', choose_tablename);

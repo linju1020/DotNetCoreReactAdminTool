@@ -10,7 +10,7 @@ using @@@.CMSAPI.Models.Common;
 using @@@.CMSAPI.Models.Domain;
 using @@@.CMSAPI.Models.ORM;
 
-namespace @@@.CMSAPI.Models.CommandsQuerys._tablename_
+namespace @@@.CMSAPI.Models.CommandsQuerys._Tablename_
 {
     //输入
     public class _tablename_DeleteManyQuery : IRequest<_tablename_DeleteManyQueryDTO>

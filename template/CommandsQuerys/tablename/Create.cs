@@ -10,7 +10,7 @@ using @@@.CMSAPI.Models.Common;
 using @@@.CMSAPI.Models.Domain;
 using @@@.CMSAPI.Models.ORM;
 
-namespace @@@.CMSAPI.Models.CommandsQuerys._tablename_
+namespace @@@.CMSAPI.Models.CommandsQuerys._Tablename_
 {
     //映射Model -> DTO
     public class AutomapperConfig_Create : Profile
