@@ -1,8 +1,8 @@
 {
   "name": "dotnetcorereactadmintool",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "模板代码生成工具 .NetCore + React-Admin",
-  "keyword": [
+  "keywords": [
     "AspNetCore",
     "React-Admin"
   ],
