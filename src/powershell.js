@@ -1,29 +1,51 @@
 var fs = require('fs');
+let OS = require('os').platform();
 
 function PowerShell() {
   this.BrowseForFolder = async function (Title) {
     var promise = new Promise(function (resolve, reject) {
       // ... some code
 
-      var psScript = `(new-object -COM 'Shell.Application').BrowseForFolder(0,'${Title}',529,0).self.path`;
+      console.log(`OS:${OS}`);
 
-      var spawn = require('child_process').spawn;
-      var child = spawn('powershell', [psScript]);
-      child.stdout.on('data', function (data) {
-        //console.log('Powershell Data: ' + data);
-        if (data.length > 0) {
-          resolve(data.toString().replace('\r', '').replace('\n', ''));
+      if (OS == "win32") {
+
+        var psScript = `(new-object -COM 'Shell.Application').BrowseForFolder(0,'${Title}',529,0).self.path`;
+
+        var spawn = require('child_process').spawn;
+        var child = spawn('powershell', [psScript]);
+        child.stdout.on('data', function (data) {
+          //console.log('Powershell Data: ' + data);
+          if (data.length > 0) {
+            resolve(data.toString().replace('\r', '').replace('\n', ''));
+          }
+        });
+        child.stderr.on('data', function (data) {
+          //this script block will get the output of the PS script
+          console.log('Powershell Errors: ' + data);
+          reject(null);
+        });
+        child.on('exit', function () {
+          //console.log('Powershell Script finished');
+        });
+        child.stdin.end(); //end
+      }
+      else if (OS == "darwin") {
+        try {
+          var execSync = require('child_process').execSync;
+          let mac_path = execSync(`osascript -e 'POSIX path of (choose folder with prompt "${Title}" with showing package contents)'`).toString();
+          if (mac_path.length > 0) {
+            resolve(mac_path.toString().replace('\r', '').replace('\n', ''));
+          }
+        } catch (e) {
+          console.log('darwin osascript Errors: ' + e);
+          reject(null);
         }
-      });
-      child.stderr.on('data', function (data) {
-        //this script block will get the output of the PS script
-        console.log('Powershell Errors: ' + data);
+      }
+      else if (OS == "linux") {
+        throw 'do net support Linux';
         reject(null);
-      });
-      child.on('exit', function () {
-        //console.log('Powershell Script finished');
-      });
-      child.stdin.end(); //end
+      }
     });
     return promise;
   };

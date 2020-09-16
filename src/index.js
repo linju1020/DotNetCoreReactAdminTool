@@ -22,7 +22,7 @@ let argv = yargs
   .help().argv;
 //console.log(argv);
 
-var cmdpath = process.cwd();
+var dirpath = __dirname; //process.cwd();
 var homepath = getHomeCrossplatform();
 var dbfilepath = homepath + '/db.json';
 //console.log(dbfilepath);
@@ -107,6 +107,7 @@ if (argv._.length == 0) {
 
           var folderpath = await new PowerShell().BrowseForFolder('选择文件夹');
           console.log(`folderpath: ` + folderpath);
+          console.log(`dirpath: ` + dirpath);
 
           deleteFolderRecursive(folderpath + '/' + choose_tablename);
           await sleep(50);
@@ -123,7 +124,7 @@ if (argv._.length == 0) {
           await sleep(20);
 
           new PowerShell().SavaFile(
-            cmdpath,
+            dirpath,
             'tablename.js', choose_tablename,
             [
               [/_tablename_/gm, choose_tablename],
@@ -132,7 +133,7 @@ if (argv._.length == 0) {
             folderpath + '/' + choose_tablename + '/React-admin'
           );
           new PowerShell().SavaFile(
-            cmdpath,
+            dirpath,
             'tablename_ResetOrderNum.js', choose_tablename,
             [[/_tablename_/gm, choose_tablename]],
             folderpath + '/' + choose_tablename + '/React-admin'
@@ -140,7 +141,7 @@ if (argv._.length == 0) {
 
           //c#
           new PowerShell().SavaFile(
-            cmdpath,
+            dirpath,
             'CMStablenameController.cs', choose_tablename,
             [
               [/_tablename_/gm, choose_tablename],
@@ -150,7 +151,7 @@ if (argv._.length == 0) {
             folderpath + '/' + choose_tablename
           );
           new PowerShell().SavaFile(
-            cmdpath,
+            dirpath,
             'Domain/tablename.cs',
             choose_tablename,
             [
@@ -163,7 +164,7 @@ if (argv._.length == 0) {
           );
 
           new PowerShell().SavaFile(
-            cmdpath,
+            dirpath,
             'CommandsQuerys/tablename/Create.cs', choose_tablename,
             [
               [/_tablename_/gm, choose_tablename],
@@ -175,7 +176,7 @@ if (argv._.length == 0) {
             folderpath + '/' + choose_tablename
           );
           new PowerShell().SavaFile(
-            cmdpath,
+            dirpath,
             'CommandsQuerys/tablename/Delete.cs', choose_tablename,
             [
               [/_tablename_/gm, choose_tablename],
@@ -187,7 +188,7 @@ if (argv._.length == 0) {
             folderpath + '/' + choose_tablename
           );
           new PowerShell().SavaFile(
-            cmdpath,
+            dirpath,
             'CommandsQuerys/tablename/DeleteMany.cs', choose_tablename,
             [
               [/_tablename_/gm, choose_tablename],
@@ -199,7 +200,7 @@ if (argv._.length == 0) {
             folderpath + '/' + choose_tablename
           );
           new PowerShell().SavaFile(
-            cmdpath,
+            dirpath,
             'CommandsQuerys/tablename/GetList.cs', choose_tablename,
             [
               [/_tablename_/gm, choose_tablename],
@@ -211,7 +212,7 @@ if (argv._.length == 0) {
             folderpath + '/' + choose_tablename
           );
           new PowerShell().SavaFile(
-            cmdpath,
+            dirpath,
             'CommandsQuerys/tablename/GetMany.cs', choose_tablename,
             [
               [/_tablename_/gm, choose_tablename],
@@ -223,7 +224,7 @@ if (argv._.length == 0) {
             folderpath + '/' + choose_tablename
           );
           new PowerShell().SavaFile(
-            cmdpath,
+            dirpath,
             'CommandsQuerys/tablename/GetOne.cs', choose_tablename,
             [
               [/_tablename_/gm, choose_tablename],
@@ -235,7 +236,7 @@ if (argv._.length == 0) {
             folderpath + '/' + choose_tablename
           );
           new PowerShell().SavaFile(
-            cmdpath,
+            dirpath,
             'CommandsQuerys/tablename/ResetOrderNum.cs', choose_tablename,
             [
               [/_tablename_/gm, choose_tablename],
@@ -247,7 +248,7 @@ if (argv._.length == 0) {
             folderpath + '/' + choose_tablename
           );
           new PowerShell().SavaFile(
-            cmdpath,
+            dirpath,
             'CommandsQuerys/tablename/Update.cs', choose_tablename,
             [
               [/_tablename_/gm, choose_tablename],
