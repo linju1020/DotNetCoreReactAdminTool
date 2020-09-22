@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
 const yargs = require('yargs');
-var fs = require('fs');
+var fs = require('fs-extra');
 var DB = require('./db');
 var PowerShell = require('./powershell');
 const {
   getHomeCrossplatform,
-  sleep, readinput_str, readinput_int, alertAndQuit, deleteFolderRecursive,
+  sleep, readinput_str, readinput_int, alertAndQuit,
   createFieldsCodes, createFieldsCodesRemoveKey,
   writeFieldsCodes, writeFieldsCodesRemoveKey
 } = require('./comm');
@@ -109,18 +109,20 @@ if (argv._.length == 0) {
           console.log(`folderpath: ` + folderpath);
           console.log(`dirpath: ` + dirpath);
 
-          deleteFolderRecursive(folderpath + '/' + choose_tablename);
+          //deleteFolderRecursive(folderpath + '/' + choose_tablename);
+          fs.removeSync(folderpath + '/' + choose_tablename);
+
           await sleep(50);
           // 创建文件夹
-          fs.mkdirSync(folderpath + '/' + choose_tablename);
+          //fs.mkdirSync(folderpath + '/' + choose_tablename);
+          //await sleep(20);
+          fs.ensureDirSync(folderpath + '/' + choose_tablename + '/React-admin');
           await sleep(20);
-          fs.mkdirSync(folderpath + '/' + choose_tablename + '/React-admin');
+          fs.ensureDirSync(folderpath + '/' + choose_tablename + '/Domain');
           await sleep(20);
-          fs.mkdirSync(folderpath + '/' + choose_tablename + '/Domain');
-          await sleep(20);
-          fs.mkdirSync(folderpath + '/' + choose_tablename + '/CommandsQuerys');
-          await sleep(20);
-          fs.mkdirSync(folderpath + '/' + choose_tablename + '/CommandsQuerys' + '/' + choose_tablename);
+          //fs.mkdirSync(folderpath + '/' + choose_tablename + '/CommandsQuerys');
+          //await sleep(20);
+          fs.ensureDirSync(folderpath + '/' + choose_tablename + '/CommandsQuerys' + '/' + choose_tablename);
           await sleep(20);
 
           new PowerShell().SavaFile(

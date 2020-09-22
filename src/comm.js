@@ -48,20 +48,6 @@ function alertAndQuit(msg = '') {
     exit();
 }
 
-var deleteFolderRecursive = function (path) {
-    if (fs.existsSync(path)) {
-        fs.readdirSync(path).forEach(function (file, index) {
-            var curPath = path + "/" + file;
-            if (fs.lstatSync(curPath).isDirectory()) { // recurse
-                deleteFolderRecursive(curPath);
-            } else { // delete file
-                fs.unlinkSync(curPath);
-            }
-        });
-        fs.rmdirSync(path);
-    }
-};
-
 const _DealType = (_type) => {
     switch (_type) {
         case 'int4':
@@ -130,7 +116,7 @@ var writeFieldsCodesRemoveKey = function (tablefields) {
 
 module.exports = {
     getHomeCrossplatform,
-    sleep, readinput_str, readinput_int, deleteFolderRecursive, alertAndQuit,
+    sleep, readinput_str, readinput_int, alertAndQuit,
     createFieldsCodes, createFieldsCodesRemoveKey,
     writeFieldsCodes, writeFieldsCodesRemoveKey
 };
