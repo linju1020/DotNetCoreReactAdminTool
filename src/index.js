@@ -99,7 +99,11 @@ if (argv._.length == 0) {
           // Create Template CODE    choose_tablename tablefields
 
           var Choose_tablename = choose_tablename[0].toUpperCase() + choose_tablename.substring(1, choose_tablename.length);//第一个字母大写
-          var Namespace_Prefix = choose_connection['namespace_prefix'];
+
+          var controller_namespace_prefix = choose_connection['controller_namespace_prefix'];
+          var commandsquerys_namespace_prefix = choose_connection['commandsquerys_namespace_prefix'];
+          var model_namespace_prefix = choose_connection['model_namespace_prefix'];
+
           var ModelFieldCode = createFieldsCodes(tablefields);
           var ModelFieldCodeRemoveKey = createFieldsCodesRemoveKey(tablefields);
           var WriteFieldCode = writeFieldsCodes(tablefields);
@@ -116,15 +120,16 @@ if (argv._.length == 0) {
           // 创建文件夹
           //fs.mkdirSync(folderpath + '/' + choose_tablename);
           //await sleep(20);
-          fs.ensureDirSync(folderpath + '/' + choose_tablename + '/React-admin');
+          fs.ensureDirSync(folderpath + '/' + Choose_tablename + '/React-admin');
           await sleep(20);
-          fs.ensureDirSync(folderpath + '/' + choose_tablename + '/Domain');
+          fs.ensureDirSync(folderpath + '/' + Choose_tablename + '/Domain');
           await sleep(20);
-          //fs.mkdirSync(folderpath + '/' + choose_tablename + '/CommandsQuerys');
+          //fs.mkdirSync(folderpath + '/' + Choose_tablename + '/CommandsQuerys');
           //await sleep(20);
-          fs.ensureDirSync(folderpath + '/' + choose_tablename + '/CommandsQuerys' + '/' + choose_tablename);
+          fs.ensureDirSync(folderpath + '/' + Choose_tablename + '/CommandsQuerys' + '/' + Choose_tablename);
           await sleep(20);
 
+          //js
           new PowerShell().SavaFile(
             dirpath,
             'tablename.js', choose_tablename,
@@ -144,46 +149,48 @@ if (argv._.length == 0) {
           //c#
           new PowerShell().SavaFile(
             dirpath,
-            'CMStablenameController.cs', choose_tablename,
+            'CMStablenameController.cs', Choose_tablename,
             [
               [/_tablename_/gm, choose_tablename],
               [/_Tablename_/gm, Choose_tablename],
-              [/@@@/gm, Namespace_Prefix]
+              [/@@@/gm, controller_namespace_prefix]
             ],
             folderpath + '/' + choose_tablename
           );
           new PowerShell().SavaFile(
             dirpath,
             'Domain/tablename.cs',
-            choose_tablename,
+            Choose_tablename,
             [
               [/_tablename_/gm, choose_tablename],
               [/_Tablename_/gm, Choose_tablename],
-              [/@@@/gm, Namespace_Prefix],
+              [/@@@/gm, model_namespace_prefix],
               [/_ModelFieldCode_/gm, ModelFieldCode]
             ],
             folderpath + '/' + choose_tablename
           );
 
+          //合并成一个文件
           new PowerShell().SavaFile(
             dirpath,
-            'CommandsQuerys/tablename/Create.cs', choose_tablename,
+            'CommandsQuerys/tablename/ReactBLL.cs', Choose_tablename,
             [
               [/_tablename_/gm, choose_tablename],
               [/_Tablename_/gm, Choose_tablename],
-              [/@@@/gm, Namespace_Prefix],
+              [/@@@@/gm, model_namespace_prefix],
+              [/@@@/gm, commandsquerys_namespace_prefix],
               [/_ModelFieldCode_/gm, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gm, ModelFieldCodeRemoveKey],
               [/_WriteFieldCode_/gm, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gm, WriteFieldCodeRemoveKey]
             ],
             folderpath + '/' + choose_tablename
           );
-          new PowerShell().SavaFile(
+          /* new PowerShell().SavaFile(
             dirpath,
             'CommandsQuerys/tablename/Delete.cs', choose_tablename,
             [
               [/_tablename_/gm, choose_tablename],
               [/_Tablename_/gm, Choose_tablename],
-              [/@@@/gm, Namespace_Prefix],
+              [/@@@/gm, controller_namespace_prefix],
               [/_ModelFieldCode_/gm, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gm, ModelFieldCodeRemoveKey],
               [/_WriteFieldCode_/gm, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gm, WriteFieldCodeRemoveKey]
             ],
@@ -195,7 +202,7 @@ if (argv._.length == 0) {
             [
               [/_tablename_/gm, choose_tablename],
               [/_Tablename_/gm, Choose_tablename],
-              [/@@@/gm, Namespace_Prefix],
+              [/@@@/gm, controller_namespace_prefix],
               [/_ModelFieldCode_/gm, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gm, ModelFieldCodeRemoveKey],
               [/_WriteFieldCode_/gm, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gm, WriteFieldCodeRemoveKey]
             ],
@@ -207,7 +214,7 @@ if (argv._.length == 0) {
             [
               [/_tablename_/gm, choose_tablename],
               [/_Tablename_/gm, Choose_tablename],
-              [/@@@/gm, Namespace_Prefix],
+              [/@@@/gm, controller_namespace_prefix],
               [/_ModelFieldCode_/gm, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gm, ModelFieldCodeRemoveKey],
               [/_WriteFieldCode_/gm, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gm, WriteFieldCodeRemoveKey]
             ],
@@ -219,7 +226,7 @@ if (argv._.length == 0) {
             [
               [/_tablename_/gm, choose_tablename],
               [/_Tablename_/gm, Choose_tablename],
-              [/@@@/gm, Namespace_Prefix],
+              [/@@@/gm, controller_namespace_prefix],
               [/_ModelFieldCode_/gm, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gm, ModelFieldCodeRemoveKey],
               [/_WriteFieldCode_/gm, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gm, WriteFieldCodeRemoveKey]
             ],
@@ -231,7 +238,7 @@ if (argv._.length == 0) {
             [
               [/_tablename_/gm, choose_tablename],
               [/_Tablename_/gm, Choose_tablename],
-              [/@@@/gm, Namespace_Prefix],
+              [/@@@/gm, controller_namespace_prefix],
               [/_ModelFieldCode_/gm, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gm, ModelFieldCodeRemoveKey],
               [/_WriteFieldCode_/gm, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gm, WriteFieldCodeRemoveKey]
             ],
@@ -243,7 +250,7 @@ if (argv._.length == 0) {
             [
               [/_tablename_/gm, choose_tablename],
               [/_Tablename_/gm, Choose_tablename],
-              [/@@@/gm, Namespace_Prefix],
+              [/@@@/gm, controller_namespace_prefix],
               [/_ModelFieldCode_/gm, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gm, ModelFieldCodeRemoveKey],
               [/_WriteFieldCode_/gm, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gm, WriteFieldCodeRemoveKey]
             ],
@@ -255,12 +262,12 @@ if (argv._.length == 0) {
             [
               [/_tablename_/gm, choose_tablename],
               [/_Tablename_/gm, Choose_tablename],
-              [/@@@/gm, Namespace_Prefix],
+              [/@@@/gm, controller_namespace_prefix],
               [/_ModelFieldCode_/gm, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gm, ModelFieldCodeRemoveKey],
               [/_WriteFieldCode_/gm, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gm, WriteFieldCodeRemoveKey]
             ],
             folderpath + '/' + choose_tablename
-          );
+          ); */
 
           alertAndQuit('Create Template Success!');
 
@@ -280,8 +287,12 @@ if (argv._.length == 1) {
   switch (command1) {
     case 'adddb':
 
-      var namespace_prefix = readinput_str({ tip: 'Please enter the code namespace prefix', required: true });
-      console.log(namespace_prefix);
+      var controller_namespace_prefix = readinput_str({ tip: 'Please enter the code [Controller] namespace prefix', required: true });
+      console.log(controller_namespace_prefix);
+      var commandsquerys_namespace_prefix = readinput_str({ tip: 'Please enter the code [CommandsQuerys] namespace prefix', required: true });
+      console.log(commandsquerys_namespace_prefix);
+      var model_namespace_prefix = readinput_str({ tip: 'Please enter the code [Model] namespace prefix', required: true });
+      console.log(model_namespace_prefix);
 
       var ip = readinput_str({ tip: 'Please enter the database server IP address', defaultValue: '127.0.0.1' });
       console.log(ip);
@@ -298,7 +309,9 @@ if (argv._.length == 1) {
       var userpwd = readinput_str({ tip: 'Please enter the database userpwd', required: true });
 
       console.log('Please confirm the following information:');
-      console.log('     Namespace Prefix:' + namespace_prefix);
+      console.log('     [Controller] Namespace Prefix:' + controller_namespace_prefix);
+      console.log('     [CommandsQuerys] Namespace Prefix:' + commandsquerys_namespace_prefix);
+      console.log('     [Model] Namespace Prefix:' + model_namespace_prefix);
       console.log('     IP:' + ip);
       console.log('     Port:' + port);
       console.log('     Database:' + database);
@@ -307,7 +320,7 @@ if (argv._.length == 1) {
       var confirm = readinput_str({ tip: 'y or n', defaultValue: 'y' });
       if (confirm.toLowerCase() != 'y') alertAndQuit('');
       else {
-        var new_data = { namespace_prefix, ip, port, database, userid, userpwd };
+        var new_data = { controller_namespace_prefix, commandsquerys_namespace_prefix, model_namespace_prefix, ip, port, database, userid, userpwd };
         var old_data = fs.readFileSync(dbfilepath).toString().trim();
         var datas = old_data.length < 1 ? [] : JSON.parse(old_data);
         datas.push(new_data);

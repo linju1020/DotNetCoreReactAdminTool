@@ -42,6 +42,10 @@ netcoretmt cleardb
 netcoretmt
 ```
 
+## 本地调试
+```shell
+npm link
+```
 
 ## 参考
 > https://github.com/mihael-stormrage/fs-dialog/blob/master/exec.js

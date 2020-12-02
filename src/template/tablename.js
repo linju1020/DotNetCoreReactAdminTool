@@ -26,12 +26,12 @@ import { ArrowBack } from '@material-ui/icons';
 import ResetOrderNum from './_tablename__ResetOrderNum';
 
 {/* 
-  <Resource name="CMS_tablename_" list={_tablename_List} create={_tablename_Create} edit={_tablename_Edit} />
-  <Resource name="CMS_tablename_" list={ListGuesser} create={EditGuesser} edit={EditGuesser} /> 
+  <Resource name="CMS_Tablename_" list={_Tablename_List} create={_Tablename_Create} edit={_Tablename_Edit} />
+  <Resource name="CMS_Tablename_" list={ListGuesser} create={EditGuesser} edit={EditGuesser} /> 
 */}
 
 //分页列表页面
-export const _tablename_List = (props) => {
+export const _Tablename_List = (props) => {
   //筛选器模块
   const Filters = (props) => {
     return (
@@ -59,7 +59,7 @@ export const _tablename_List = (props) => {
     <List
       {...props}
       title="XX列表"
-      sort={{ field: 'ordernum', order: 'DESC' }}
+      sort={{ field: 'id', order: 'DESC' }}
       filters={<Filters />}
       bulkActionButtons={<AssetBulkActionButtons />}
     >
@@ -77,7 +77,7 @@ export const _tablename_List = (props) => {
 ////////////////////////////////////////////////////////////////////////
 
 //编辑页面
-export const _tablename_Edit = (props) => {
+export const _Tablename_Edit = (props) => {
   const PostEditActions = (props) => {
     const { basePath } = props;
     const redirect = useRedirect();
@@ -116,7 +116,7 @@ export const _tablename_Edit = (props) => {
 ////////////////////////////////////////////////////////////////////////
 
 //创建页面
-export const _tablename_Create = (props) => {
+export const _Tablename_Create = (props) => {
   const PostCreateActions = (props) => {
     const { basePath } = props;
     const redirect = useRedirect();

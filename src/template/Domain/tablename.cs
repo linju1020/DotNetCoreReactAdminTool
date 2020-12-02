@@ -1,10 +1,9 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using @@@.CMSAPI.Models.ORM;
 
-namespace @@@.CMSAPI.Models.Domain
+namespace @@@
 {
-    public class _tablename_ : ModelBase<_tablename_>
+    public class _Tablename_ : ModelBase<_Tablename_>
     {
         [Key]
         _ModelFieldCode_
