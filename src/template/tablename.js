@@ -65,8 +65,8 @@ export const _Tablename_List = (props) => {
     >
       <Datagrid style={{ tableLayout: 'fixed' }}>
         <TextField source="id" />
-        {/* <TextField label="名称" source="name" />
-        <TextField label="排序" source="ordernum" /> */}
+        {/* <TextField label="名称" source="Name" />
+        <TextField label="排序" source="OrderNum" /> */}
         <EditButton />
       </Datagrid>
     </List>
@@ -105,8 +105,8 @@ export const _Tablename_Edit = (props) => {
     <Edit {...props} actions={<PostEditActions />}>
       <SimpleForm toolbar={<PostEditToolbar />}>
         {/* <TextInput source="id" /> */}
-        {/* <TextInput source="name" />
-        <NumberInput source="ordernum" /> */}
+        {/* <TextInput source="Name" />
+        <NumberInput source="OrderNum" /> */}
       </SimpleForm>
     </Edit>
   );
@@ -155,8 +155,8 @@ export const _Tablename_Create = (props) => {
     <Create {...props} actions={<PostCreateActions />}>
       <SimpleForm toolbar={<PostCreateToolbar />}>
         {/* <TextInput source="id" /> */}
-        <TextInput source="name" />
-        <NumberInput source="ordernum" />
+        <TextInput source="Name" />
+        <NumberInput source="OrderNum" />
       </SimpleForm>
     </Create>
   );

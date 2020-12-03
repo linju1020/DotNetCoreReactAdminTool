@@ -356,7 +356,7 @@ namespace @@@._Tablename_BLL
     {
         public int[] ids { get; set; }
 
-        public int ordernum { get; set; }
+        public int OrderNum { get; set; }
     }
 
     //输出
@@ -382,7 +382,7 @@ namespace @@@._Tablename_BLL
             foreach (var id in request.ids)
             {
                 var item = await _Tablename_.GetModel(id);
-                item.ordernum = request.ordernum;
+                item.OrderNum = request.OrderNum;
                 await item.Update(STE);
             }
             if (await STE.ExecuteSqlTran())

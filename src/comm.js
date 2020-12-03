@@ -67,6 +67,7 @@ const _DealType = (_type) => {
             return 'string';
 
         case 'boolean':
+        case 'bool':
             return 'bool';
 
         case 'timestamp':

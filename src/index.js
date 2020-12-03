@@ -173,7 +173,7 @@ if (argv._.length == 0) {
           //合并成一个文件
           new PowerShell().SavaFile(
             dirpath,
-            'CommandsQuerys/tablename/ReactBLL.cs', Choose_tablename,
+            'CommandsQuerys/tablenameBLL.cs', Choose_tablename,
             [
               [/_tablename_/gm, choose_tablename],
               [/_Tablename_/gm, Choose_tablename],

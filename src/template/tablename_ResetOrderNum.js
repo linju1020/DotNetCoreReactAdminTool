@@ -22,7 +22,7 @@ const ResetOrderNum = (props) => {
     const [updateMany, { loading }] = useUpdateMany(
         basePathName,
         selectedIds,
-        { payload: 'ResetOrderNum', data: { ordernum: 0 } },
+        { payload: 'ResetOrderNum', data: { OrderNum: 0 } },
         {
             onSuccess: () => {
                 refresh();
