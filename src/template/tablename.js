@@ -7,7 +7,6 @@ import {
   TextField,
   Filter,
   TextInput,
-  NumberField,
   EditButton,
   Edit,
   Create,
@@ -18,9 +17,7 @@ import {
   SaveButton,
   Toolbar,
   TopToolbar,
-  ReferenceField,
-  ReferenceInput, 
-  SelectInput
+  DeleteWithConfirmButton
 } from 'react-admin';
 import { ArrowBack } from '@material-ui/icons';
 import ResetOrderNum from './_tablename__ResetOrderNum';
@@ -54,6 +51,15 @@ export const _Tablename_List = (props) => {
       </Fragment>
     );
   };
+  //行右侧功能按钮
+  const RowAction = (props) => {
+    return (
+      <div style={{ textAlign: 'right' }}>
+        <EditButton {...props} />
+        <DeleteWithConfirmButton {...props} confirmTitle="删除确认" confirmContent="确认要删除该记录吗？" />
+      </div>
+    );
+  }
 
   return (
     <List
@@ -67,7 +73,7 @@ export const _Tablename_List = (props) => {
         <TextField source="id" />
         {/* <TextField label="名称" source="Name" />
         <TextField label="排序" source="OrderNum" /> */}
-        <EditButton />
+        <RowAction />
       </Datagrid>
     </List>
   );
