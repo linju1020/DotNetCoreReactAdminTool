@@ -23,6 +23,8 @@ import { ArrowBack } from '@material-ui/icons';
 import ResetOrderNum from './_tablename__ResetOrderNum';
 
 {/* 
+  import { _Tablename_List, _Tablename_Create, _Tablename_Edit } from './components/_Tablename_';
+
   <Resource name="CMS_Tablename_" list={_Tablename_List} create={_Tablename_Create} edit={_Tablename_Edit} />
   <Resource name="CMS_Tablename_" list={ListGuesser} create={EditGuesser} edit={EditGuesser} /> 
 */}
