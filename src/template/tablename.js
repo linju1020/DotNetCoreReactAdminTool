@@ -110,7 +110,7 @@ export const _Tablename_Edit = (props) => {
     );
   };
   return (
-    <Edit {...props} actions={<PostEditActions />}>
+    <Edit undoable={false} {...props} actions={<PostEditActions />}>
       <SimpleForm toolbar={<PostEditToolbar />}>
         {/* <TextInput source="id" /> */}
         {/* <TextInput source="Name" />
@@ -160,7 +160,7 @@ export const _Tablename_Create = (props) => {
   };
 
   return (
-    <Create {...props} actions={<PostCreateActions />}>
+    <Create undoable={false} {...props} actions={<PostCreateActions />}>
       <SimpleForm toolbar={<PostCreateToolbar />}>
         {/* <TextInput source="id" /> */}
         <TextInput source="Name" />
