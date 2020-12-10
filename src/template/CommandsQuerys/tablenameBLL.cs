@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Comm.ReactAdmin;
 using @@@@;
 
 namespace @@@._Tablename_BLL
@@ -380,7 +381,7 @@ namespace @@@._Tablename_BLL
             foreach (var id in request.ids)
             {
                 var item = await _Tablename_.GetModel(id);
-                item.OrderNum = request.OrderNum;
+                //item.OrderNum = request.OrderNum;
                 await item.Update(STE);
             }
             if (await STE.ExecuteSqlTran())
