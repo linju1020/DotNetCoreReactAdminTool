@@ -28,11 +28,7 @@ export const _Tablename_List = (props) => {
     return (
       <Fragment>
         {/* <ResetOrderNum label="重置排序" {...props} /> */}
-        <BulkDeleteWithConfirmButton
-          {...props}
-          confirmTitle="删除确认"
-          confirmContent="确认要删除所选记录吗？"
-        />
+        <BulkDeleteWithConfirmButton {...props} confirmTitle="删除确认" confirmContent="确认要删除所选记录吗？" />
       </Fragment>
     );
   };
@@ -47,9 +43,7 @@ export const _Tablename_List = (props) => {
   }
 
   return (
-    <List {...props} title="XX列表" sort={{ field: 'id', order: 'DESC' }} filters={<Filters />}
-      bulkActionButtons={false} //bulkActionButtons={<AssetBulkActionButtons />}
-    >
+    <List {...props} title="XX列表" sort={{ field: 'id', order: 'DESC' }} filters={<Filters />} bulkActionButtons={<AssetBulkActionButtons />} >
       <Datagrid style={{ tableLayout: 'fixed' }}>
         <TextField source="id" />
         {/* <TextField label="名称" source="Name" /> */}
