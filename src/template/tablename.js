@@ -1,26 +1,9 @@
 import * as React from 'react';
 import { Fragment } from 'react';
-import {
-  useRedirect,
-  List,
-  Datagrid,
-  TextField,
-  Filter,
-  TextInput,
-  EditButton,
-  Edit,
-  Create,
-  SimpleForm,
-  NumberInput,
-  BulkDeleteWithConfirmButton,
-  Button,
-  SaveButton,
-  Toolbar,
-  TopToolbar,
-  DeleteWithConfirmButton
-} from 'react-admin';
+import {required,minLength,maxLength,minValue,maxValue,number,regex,email,choices } from 'react-admin';
+import {useRedirect,List,Datagrid,TextField,Filter,TextInput,EditButton,Edit,Create,SimpleForm,NumberInput,BulkDeleteWithConfirmButton,Button,SaveButton,Toolbar,TopToolbar,DeleteWithConfirmButton} from 'react-admin';
 import { ArrowBack } from '@material-ui/icons';
-import ResetOrderNum from './_tablename__ResetOrderNum';
+//import ResetOrderNum from './_tablename__ResetOrderNum';
 
 {/* 
   import { _Tablename_List, _Tablename_Create, _Tablename_Edit } from './components/_Tablename_';
@@ -44,7 +27,7 @@ export const _Tablename_List = (props) => {
   const AssetBulkActionButtons = (props) => {
     return (
       <Fragment>
-        <ResetOrderNum label="重置排序" {...props} />
+        {/* <ResetOrderNum label="重置排序" {...props} /> */}
         <BulkDeleteWithConfirmButton
           {...props}
           confirmTitle="删除确认"
@@ -64,17 +47,13 @@ export const _Tablename_List = (props) => {
   }
 
   return (
-    <List
-      {...props}
-      title="XX列表"
-      sort={{ field: 'id', order: 'DESC' }}
-      filters={<Filters />}
-      bulkActionButtons={<AssetBulkActionButtons />}
+    <List {...props} title="XX列表" sort={{ field: 'id', order: 'DESC' }} filters={<Filters />}
+      bulkActionButtons={false} //bulkActionButtons={<AssetBulkActionButtons />}
     >
       <Datagrid style={{ tableLayout: 'fixed' }}>
         <TextField source="id" />
-        {/* <TextField label="名称" source="Name" />
-        <TextField label="排序" source="OrderNum" /> */}
+        {/* <TextField label="名称" source="Name" /> */}
+        {/* <TextField label="排序" source="OrderNum" />  */}
         <RowAction />
       </Datagrid>
     </List>
@@ -87,22 +66,16 @@ export const _Tablename_List = (props) => {
 //编辑页面
 export const _Tablename_Edit = (props) => {
   const PostEditActions = (props) => {
-    const { basePath } = props;
-    const redirect = useRedirect();
+    const { basePath } = props; const redirect = useRedirect();
     return (
       <TopToolbar {...props}>
-        <Button
-          label="返回列表"
-          onClick={() => redirect(basePath)}
-          variant="text"
-        >
+        <Button label="返回列表" onClick={() => redirect(basePath)} variant="text">
           <ArrowBack />
         </Button>
       </TopToolbar>
     );
   };
   const PostEditToolbar = (props) => {
-    const { basePath } = props;
     return (
       <Toolbar {...props}>
         <SaveButton />
@@ -111,11 +84,7 @@ export const _Tablename_Edit = (props) => {
   };
   return (
     <Edit undoable={false} {...props} actions={<PostEditActions />}>
-      <SimpleForm toolbar={<PostEditToolbar />}>
-        {/* <TextInput source="id" /> */}
-        {/* <TextInput source="Name" />
-        <NumberInput source="OrderNum" /> */}
-      </SimpleForm>
+      <MyForm toolbar={<PostEditToolbar />} />
     </Edit>
   );
 };
@@ -126,15 +95,10 @@ export const _Tablename_Edit = (props) => {
 //创建页面
 export const _Tablename_Create = (props) => {
   const PostCreateActions = (props) => {
-    const { basePath } = props;
-    const redirect = useRedirect();
+    const { basePath } = props; const redirect = useRedirect();
     return (
       <TopToolbar {...props}>
-        <Button
-          label="返回列表"
-          onClick={() => redirect(basePath)}
-          variant="text"
-        >
+        <Button label="返回列表" onClick={() => redirect(basePath)} variant="text" >
           <ArrowBack />
         </Button>
       </TopToolbar>
@@ -144,28 +108,27 @@ export const _Tablename_Create = (props) => {
     const { basePath } = props;
     return (
       <Toolbar {...props}>
-        <SaveButton
-          label="保存&列表"
-          redirect={basePath}
-          submitOnEnter={true}
-        />
-        <SaveButton
-          label="保存&继续"
-          redirect={false}
-          submitOnEnter={false}
-          variant="text"
-        />
+        <SaveButton label="保存&列表" redirect={basePath} submitOnEnter={true} />
+        <SaveButton label="保存&继续" redirect={false} submitOnEnter={false} variant="text" />
       </Toolbar>
     );
   };
 
   return (
     <Create undoable={false} {...props} actions={<PostCreateActions />}>
-      <SimpleForm toolbar={<PostCreateToolbar />}>
-        {/* <TextInput source="id" /> */}
-        <TextInput source="Name" />
-        <NumberInput source="OrderNum" />
-      </SimpleForm>
+       <MyForm toolbar={<PostCreateToolbar />} />
     </Create>
   );
 };
+
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+//Create和Edit公用表单
+const MyForm = (props) => {
+  return (
+    <SimpleForm {...props} >
+        {/* <TextInput source="Name" /> */}
+        {/* <NumberInput source="OrderNum" /> */} 
+    </SimpleForm>
+  );
+}
