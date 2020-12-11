@@ -78,7 +78,7 @@ export const _Tablename_Edit = (props) => {
   };
   return (
     <Edit undoable={false} {...props} actions={<PostEditActions />}>
-      <MyForm toolbar={<PostEditToolbar />} />
+      <MyForm Edit={true} toolbar={<PostEditToolbar />} />
     </Edit>
   );
 };
@@ -110,7 +110,7 @@ export const _Tablename_Create = (props) => {
 
   return (
     <Create undoable={false} {...props} actions={<PostCreateActions />}>
-       <MyForm toolbar={<PostCreateToolbar />} />
+       <MyForm Create={true} toolbar={<PostCreateToolbar />} />
     </Create>
   );
 };
@@ -119,6 +119,7 @@ export const _Tablename_Create = (props) => {
 ////////////////////////////////////////////////////////////////////////
 //Create和Edit公用表单
 const MyForm = (props) => {
+  let { Edit, Create } = props;
   return (
     <SimpleForm {...props} >
         {/* <TextInput source="Name" /> */}
