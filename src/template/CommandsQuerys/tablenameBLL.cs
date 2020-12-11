@@ -197,6 +197,11 @@ namespace @@@._Tablename_BLL
 
         public async Task<_Tablename_CreateQueryDTO> Handle(_Tablename_CreateQuery request, CancellationToken cancellationToken)
         {
+            // if (!(await Banner.GetModelWhere(t => 
+            //     t.XXX == request.XXX &&  t.XXXX == request.XXXX
+            // )).IsNull())
+            //     throw new MyException("已经存在相同记录，不能重复添加");
+
             var item = new _Tablename_();
             _WriteFieldCodeRemoveKey_
             item.id = (await item.Add()).ToInt32();
@@ -245,6 +250,11 @@ namespace @@@._Tablename_BLL
 
         public async Task<_Tablename_UpdateQueryDTO> Handle(_Tablename_UpdateQuery request, CancellationToken cancellationToken)
         {
+            // if (!(await _Tablename_.GetModelWhere(t => t.id != request.id && 
+            //     ( t.XXX == request.XXX &&  t.XXXX == request.XXXX )
+            // )).IsNull())
+            //     throw new MyException("已经存在相同记录，请检查");
+
             var item = await _Tablename_.GetModel(request.id);
             _WriteFieldCodeRemoveKey_
             if (await item.Update())
