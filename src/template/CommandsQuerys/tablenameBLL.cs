@@ -197,7 +197,7 @@ namespace @@@._Tablename_BLL
 
         public async Task<_Tablename_CreateQueryDTO> Handle(_Tablename_CreateQuery request, CancellationToken cancellationToken)
         {
-            // if (!(await Banner.GetModelWhere(t => 
+            // if (!(await _Tablename_.GetModelWhere(t => 
             //     t.XXX == request.XXX &&  t.XXXX == request.XXXX
             // )).IsNull())
             //     throw new MyException("已经存在相同记录，不能重复添加");
