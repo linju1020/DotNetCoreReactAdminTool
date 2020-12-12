@@ -11,17 +11,24 @@ using @@@@;
 
 namespace @@@._Tablename_BLL
 {
-    #region GetList
-    
-    //映射Model -> DTO
-    public class AutomapperConfig_GetList : Profile
+    #region 映射Model -> DTO
+     
+    public class AutomapperConfig : Profile
     {
         public AutomapperConfig_GetList()
         {
             CreateMap<_Tablename_, _Tablename_DTO>();
         }
     }
+    public class _Tablename_DTO
+    {
+       _ModelFieldCode_
+    }
 
+    #endregion
+
+    #region GetList
+    
     //输入
     public class _Tablename_GetListQuery : ReactAdmin_RangeAndSort, IRequest<_Tablename_GetListQueryDTO>
     {
@@ -34,10 +41,6 @@ namespace @@@._Tablename_BLL
     {
         public List<_Tablename_DTO> data { get; set; }
         public int total { get; set; }
-    }
-    public class _Tablename_DTO
-    {
-       _ModelFieldCode_
     }
 
     public class _Tablename_GetListQueryHandler : IRequestHandler<_Tablename_GetListQuery, _Tablename_GetListQueryDTO>
@@ -71,28 +74,13 @@ namespace @@@._Tablename_BLL
 
     #region GetOne
 
-    //映射Model -> DTO
-    public class AutomapperConfig_GetOne : Profile
-    {
-        public AutomapperConfig_GetOne()
-        {
-            CreateMap<_Tablename_, _Tablename_GetOneQueryDTO>();
-        }
-    }
-
     //输入
-    public class _Tablename_GetOneQuery : IRequest<_Tablename_GetOneQueryDTO>
+    public class _Tablename_GetOneQuery : IRequest<_Tablename_DTO>
     {
         public int id { get; set; }
     }
 
-    //输出
-    public class _Tablename_GetOneQueryDTO
-    {
-        _ModelFieldCode_
-    }
-
-    public class _Tablename_GetOneQueryHandler : IRequestHandler<_Tablename_GetOneQuery, _Tablename_GetOneQueryDTO>
+    public class _Tablename_GetOneQueryHandler : IRequestHandler<_Tablename_GetOneQuery, _Tablename_DTO>
     {
         private readonly ILogger<_Tablename_GetOneQueryHandler> logger;
         private readonly IMapper mapper;
@@ -103,10 +91,10 @@ namespace @@@._Tablename_BLL
             this.mapper = mapper;
         }
 
-        public async Task<_Tablename_GetOneQueryDTO> Handle(_Tablename_GetOneQuery request, CancellationToken cancellationToken)
+        public async Task<_Tablename_DTO> Handle(_Tablename_GetOneQuery request, CancellationToken cancellationToken)
         {
             var item = await _Tablename_.GetModel(request.id);
-            return this.mapper.Map<_Tablename_GetOneQueryDTO>(item);
+            return this.mapper.Map<_Tablename_DTO>(item);
         }
     }
 
@@ -114,28 +102,13 @@ namespace @@@._Tablename_BLL
 
     #region GetMany
 
-    //映射Model -> DTO
-    public class AutomapperConfig_GetMany : Profile
-    {
-        public AutomapperConfig_GetMany()
-        {
-            CreateMap<_Tablename_, _Tablename_GetManyQueryDTO>();
-        }
-    }
-
     //输入
-    public class _Tablename_GetManyQuery :  IRequest<List<_Tablename_GetManyQueryDTO>>
+    public class _Tablename_GetManyQuery :  IRequest<List<_Tablename_DTO>>
     {
         public int[] ids { get; set; }
     }
 
-    //输出 List
-    public class _Tablename_GetManyQueryDTO
-    {
-      _ModelFieldCode_
-    }
-
-    public class _Tablename_GetManyQueryHandler : IRequestHandler<_Tablename_GetManyQuery, List<_Tablename_GetManyQueryDTO>>
+    public class _Tablename_GetManyQueryHandler : IRequestHandler<_Tablename_GetManyQuery, List<_Tablename_DTO>>
     {
         private readonly ILogger<_Tablename_GetManyQueryHandler> logger;
         private readonly IMapper mapper;
@@ -146,7 +119,7 @@ namespace @@@._Tablename_BLL
             this.mapper = mapper;
         }
 
-        public async Task<List<_Tablename_GetManyQueryDTO>> Handle(_Tablename_GetManyQuery request, CancellationToken cancellationToken)
+        public async Task<List<_Tablename_DTO>> Handle(_Tablename_GetManyQuery request, CancellationToken cancellationToken)
         {
             ParamCommAnd paramCommAnd = new ParamCommAnd();
             paramCommAnd.Add("id", request.ids, "in");
@@ -155,7 +128,7 @@ namespace @@@._Tablename_BLL
             paramCommAnd.CreateWhere(out where, out param);
 
             var items = await _Tablename_.GetModelList(where, param).GetList();
-            return this.mapper.Map<List<_Tablename_GetManyQueryDTO>>(items);
+            return this.mapper.Map<List<_Tablename_DTO>>(items);
         }
     }
 
@@ -163,28 +136,13 @@ namespace @@@._Tablename_BLL
 
     #region Create
 
-    //映射Model -> DTO
-    public class AutomapperConfig_Create : Profile
-    {
-        public AutomapperConfig_Create()
-        {
-            CreateMap<_Tablename_, _Tablename_CreateQueryDTO>();
-        }
-    }
-
     //输入
-    public class _Tablename_CreateQuery : IRequest<_Tablename_CreateQueryDTO>
+    public class _Tablename_CreateQuery : IRequest<_Tablename_DTO>
     {
         _ModelFieldCodeRemoveKey_
     }
 
-    //输出
-    public class _Tablename_CreateQueryDTO
-    {
-        _ModelFieldCode_
-    }
-
-    public class _Tablename_CreateQueryHandler : IRequestHandler<_Tablename_CreateQuery, _Tablename_CreateQueryDTO>
+    public class _Tablename_CreateQueryHandler : IRequestHandler<_Tablename_CreateQuery, _Tablename_DTO>
     {
         private readonly ILogger<_Tablename_CreateQueryHandler> logger;
         private readonly IMapper mapper;
@@ -195,7 +153,7 @@ namespace @@@._Tablename_BLL
             this.mapper = mapper;
         }
 
-        public async Task<_Tablename_CreateQueryDTO> Handle(_Tablename_CreateQuery request, CancellationToken cancellationToken)
+        public async Task<_Tablename_DTO> Handle(_Tablename_CreateQuery request, CancellationToken cancellationToken)
         {
             // if (!(await _Tablename_.GetModelWhere(t => 
             //     t.XXX == request.XXX &&  t.XXXX == request.XXXX
@@ -206,7 +164,7 @@ namespace @@@._Tablename_BLL
             _WriteFieldCodeRemoveKey_
             item.id = (await item.Add()).ToInt32();
             if (item.id > 0)
-                return this.mapper.Map<_Tablename_CreateQueryDTO>(item);
+                return this.mapper.Map<_Tablename_DTO>(item);
             else
                 throw new MyException("创建出错");
         }
@@ -216,28 +174,13 @@ namespace @@@._Tablename_BLL
 
     #region Update
 
-    //映射Model -> DTO
-    public class AutomapperConfig_Update : Profile
-    {
-        public AutomapperConfig_Update()
-        {
-            CreateMap<_Tablename_, _Tablename_UpdateQueryDTO>();
-        }
-    }
-
     //输入
-    public class _Tablename_UpdateQuery : IRequest<_Tablename_UpdateQueryDTO>
+    public class _Tablename_UpdateQuery : IRequest<_Tablename_DTO>
     {
         _ModelFieldCode_
     }
 
-    //输出
-    public class _Tablename_UpdateQueryDTO
-    {
-        _ModelFieldCode_
-    }
-
-    public class _Tablename_UpdateQueryHandler : IRequestHandler<_Tablename_UpdateQuery, _Tablename_UpdateQueryDTO>
+    public class _Tablename_UpdateQueryHandler : IRequestHandler<_Tablename_UpdateQuery, _Tablename_DTO>
     {
         private readonly ILogger<_Tablename_UpdateQueryHandler> logger;
         private readonly IMapper mapper;
@@ -248,7 +191,7 @@ namespace @@@._Tablename_BLL
             this.mapper = mapper;
         }
 
-        public async Task<_Tablename_UpdateQueryDTO> Handle(_Tablename_UpdateQuery request, CancellationToken cancellationToken)
+        public async Task<_Tablename_DTO> Handle(_Tablename_UpdateQuery request, CancellationToken cancellationToken)
         {
             // if (!(await _Tablename_.GetModelWhere(t => t.id != request.id && 
             //     ( t.XXX == request.XXX &&  t.XXXX == request.XXXX )
@@ -258,7 +201,7 @@ namespace @@@._Tablename_BLL
             var item = await _Tablename_.GetModel(request.id);
             _WriteFieldCodeRemoveKey_
             if (await item.Update())
-                return this.mapper.Map<_Tablename_UpdateQueryDTO>(item);
+                return this.mapper.Map<_Tablename_DTO>(item);
             else
                 throw new MyException("保存出错");
         }
@@ -268,28 +211,13 @@ namespace @@@._Tablename_BLL
 
     #region Delete
 
-    //映射Model -> DTO
-    public class AutomapperConfig_Delete : Profile
-    {
-        public AutomapperConfig_Delete()
-        {
-            CreateMap<_Tablename_, _Tablename_DeleteQueryDTO>();
-        }
-    }
-
     //输入
-    public class _Tablename_DeleteQuery : IRequest<_Tablename_DeleteQueryDTO>
+    public class _Tablename_DeleteQuery : IRequest<_Tablename_DTO>
     {
         public int id { get; set; }
     }
 
-    //输出
-    public class _Tablename_DeleteQueryDTO
-    {
-        _ModelFieldCode_
-    }
-
-    public class _Tablename_DeleteQueryHandler : IRequestHandler<_Tablename_DeleteQuery, _Tablename_DeleteQueryDTO>
+    public class _Tablename_DeleteQueryHandler : IRequestHandler<_Tablename_DeleteQuery, _Tablename_DTO>
     {
         private readonly ILogger<_Tablename_DeleteQueryHandler> logger;
         private readonly IMapper mapper;
@@ -300,12 +228,12 @@ namespace @@@._Tablename_BLL
             this.mapper = mapper;
         }
 
-        public async Task<_Tablename_DeleteQueryDTO> Handle(_Tablename_DeleteQuery request, CancellationToken cancellationToken)
+        public async Task<_Tablename_DTO> Handle(_Tablename_DeleteQuery request, CancellationToken cancellationToken)
         {
             var item = await _Tablename_.GetModel(request.id);
             if (await item.Delete())
             {
-                return this.mapper.Map<_Tablename_DeleteQueryDTO>(item);
+                return this.mapper.Map<_Tablename_DTO>(item);
             }
             else
                 throw new MyException("删除出错");
