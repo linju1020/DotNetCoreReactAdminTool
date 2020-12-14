@@ -15,7 +15,7 @@ namespace @@@._Tablename_BLL
      
     public class AutomapperConfig : Profile
     {
-        public AutomapperConfig_GetList()
+        public AutomapperConfig()
         {
             CreateMap<_Tablename_, _Tablename_DTO>();
         }
