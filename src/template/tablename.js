@@ -1,16 +1,23 @@
 import * as React from 'react';
 import { Fragment } from 'react';
-import {required,minLength,maxLength,minValue,maxValue,number,regex,email,choices } from 'react-admin';
-import {useRedirect,List,Datagrid,TextField,Filter,TextInput,BooleanInput,EditButton,Edit,Create,SimpleForm,NumberInput,BulkDeleteWithConfirmButton,Button,SaveButton,Toolbar,TopToolbar,DeleteWithConfirmButton} from 'react-admin';
+import { makeStyles } from '@material-ui/core/styles';
+import { required, minLength, maxLength, minValue, maxValue, number, regex, email, choices } from 'react-admin';
+import { useRedirect, List, Datagrid, TextField, Filter, TextInput, BooleanInput, EditButton, Edit, Create, SimpleForm, NumberInput, BulkDeleteWithConfirmButton, Button, SaveButton, Toolbar, TopToolbar, DeleteWithConfirmButton, Show, SimpleShowLayout, ImageField, ShowButton } from 'react-admin';
 import { ArrowBack } from '@material-ui/icons';
 //import ResetOrderNum from './_tablename__ResetOrderNum';
 
 {/* 
   import { _Tablename_List, _Tablename_Create, _Tablename_Edit } from './components/_Tablename_';
 
-  <Resource name="CMS_Tablename_" list={_Tablename_List} create={_Tablename_Create} edit={_Tablename_Edit} />
-  <Resource name="CMS_Tablename_" list={ListGuesser} create={EditGuesser} edit={EditGuesser} /> 
+  <Resource name="CMS_Tablename_" list={_Tablename_List} create={_Tablename_Create} edit={_Tablename_Edit} show={_Tablename_Show} />
+  <Resource name="CMS_Tablename_" list={ListGuesser} create={EditGuesser} edit={EditGuesser} edit={ShowGuesser} /> 
 */}
+
+const useStyles = makeStyles({
+  imageField: {
+    '& img': { width: 60 }
+  },
+});
 
 //分页列表页面
 export const _Tablename_List = (props) => {
@@ -36,12 +43,14 @@ export const _Tablename_List = (props) => {
   const RowAction = (props) => {
     return (
       <div style={{ textAlign: 'right' }}>
-        <EditButton {...props} />
+        <EditButton {...props} /><br />
+        <ShowButton {...props} /><br />
         <DeleteWithConfirmButton {...props} confirmTitle="删除确认" confirmContent="确认要删除该记录吗？" />
       </div>
     );
   }
 
+  const classes = useStyles();
   return (
     <List {...props} title="XX列表" sort={{ field: 'id', order: 'DESC' }} filters={<Filters />} bulkActionButtons={<AssetBulkActionButtons />} >
       <Datagrid>
@@ -54,6 +63,35 @@ export const _Tablename_List = (props) => {
     </List>
   );
 };
+
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+
+//SHOW页面
+export const _Tablename_Show = (props) => {
+  const ShowActions = (props) => {
+    const { basePath, data } = props; const redirect = useRedirect();
+    return (
+      <TopToolbar>
+        <Button label="返回列表" onClick={() => redirect(basePath)} variant="text">
+          <ArrowBack />
+        </Button>
+        <EditButton basePath={basePath} record={data} />
+      </TopToolbar>
+    );
+  };
+
+  return (
+    <Show {...props} actions={<ShowActions />}>
+      <SimpleShowLayout>
+        <TextField source="id" />
+        {/* <TextField label="名称" source="Name" /> */}
+        {/* <TextField label="排序" source="OrderNum" />  */}
+          _createWebListCodes_
+      </SimpleShowLayout>
+    </Show>
+  );
+}
 
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
@@ -111,7 +149,7 @@ export const _Tablename_Create = (props) => {
 
   return (
     <Create undoable={false} {...props} actions={<PostCreateActions />}>
-       <MyForm Create={true} toolbar={<PostCreateToolbar />} />
+      <MyForm Create={true} toolbar={<PostCreateToolbar />} />
     </Create>
   );
 };
@@ -123,8 +161,8 @@ const MyForm = (props) => {
   let { Edit, Create } = props;
   return (
     <SimpleForm {...props} >
-        {/* <TextInput source="Name" /> */}
-        {/* <NumberInput source="OrderNum" /> */} 
+      {/* <TextInput source="Name" /> */}
+      {/* <NumberInput source="OrderNum" /> */}
         _createWebFormCodes_
     </SimpleForm>
   );
