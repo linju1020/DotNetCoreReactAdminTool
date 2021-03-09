@@ -8,7 +8,8 @@ const {
   getHomeCrossplatform,
   sleep, readinput_str, readinput_int, alertAndQuit,
   createFieldsCodes, createFieldsCodesRemoveKey,
-  writeFieldsCodes, writeFieldsCodesRemoveKey
+  writeFieldsCodes, writeFieldsCodesRemoveKey,
+  createWebListCodes,createWebFormCodes,
 } = require('./comm');
 
 
@@ -109,6 +110,9 @@ if (argv._.length == 0) {
           var WriteFieldCode = writeFieldsCodes(tablefields);
           var WriteFieldCodeRemoveKey = writeFieldsCodesRemoveKey(tablefields);
 
+          var _createWebListCodes = createWebListCodes(tablefields);
+          var _createWebFormCodes = createWebFormCodes(tablefields);
+
           var folderpath = await new PowerShell().BrowseForFolder('选择文件夹');
           console.log(`folderpath: ` + folderpath);
           console.log(`dirpath: ` + dirpath);
@@ -135,7 +139,9 @@ if (argv._.length == 0) {
             'tablename.js', choose_tablename,
             [
               [/_tablename_/gm, choose_tablename],
-              [/_Tablename_/gm, Choose_tablename]
+              [/_Tablename_/gm, Choose_tablename],
+              [/_createWebListCodes_/gm, _createWebListCodes],
+              [/_createWebFormCodes_/gm, _createWebFormCodes]
             ],
             folderpath + '/' + choose_tablename + '/React-admin'
           );

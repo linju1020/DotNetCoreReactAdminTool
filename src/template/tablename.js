@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Fragment } from 'react';
 import {required,minLength,maxLength,minValue,maxValue,number,regex,email,choices } from 'react-admin';
-import {useRedirect,List,Datagrid,TextField,Filter,TextInput,EditButton,Edit,Create,SimpleForm,NumberInput,BulkDeleteWithConfirmButton,Button,SaveButton,Toolbar,TopToolbar,DeleteWithConfirmButton} from 'react-admin';
+import {useRedirect,List,Datagrid,TextField,Filter,TextInput,BooleanInput,EditButton,Edit,Create,SimpleForm,NumberInput,BulkDeleteWithConfirmButton,Button,SaveButton,Toolbar,TopToolbar,DeleteWithConfirmButton} from 'react-admin';
 import { ArrowBack } from '@material-ui/icons';
 //import ResetOrderNum from './_tablename__ResetOrderNum';
 
@@ -44,10 +44,11 @@ export const _Tablename_List = (props) => {
 
   return (
     <List {...props} title="XX列表" sort={{ field: 'id', order: 'DESC' }} filters={<Filters />} bulkActionButtons={<AssetBulkActionButtons />} >
-      <Datagrid style={{ tableLayout: 'fixed' }}>
+      <Datagrid>
         <TextField source="id" />
         {/* <TextField label="名称" source="Name" /> */}
         {/* <TextField label="排序" source="OrderNum" />  */}
+        _createWebListCodes_
         <RowAction />
       </Datagrid>
     </List>
@@ -124,6 +125,7 @@ const MyForm = (props) => {
     <SimpleForm {...props} >
         {/* <TextInput source="Name" /> */}
         {/* <NumberInput source="OrderNum" /> */} 
+        _createWebFormCodes_
     </SimpleForm>
   );
 }
