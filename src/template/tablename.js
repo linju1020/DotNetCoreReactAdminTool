@@ -7,7 +7,7 @@ import { ArrowBack } from '@material-ui/icons';
 //import ResetOrderNum from './_tablename__ResetOrderNum';
 
 {/* 
-  import { _Tablename_List, _Tablename_Create, _Tablename_Edit } from './components/_Tablename_';
+  import { _Tablename_List, _Tablename_Create, _Tablename_Edit, _Tablename_Show } from './components/_Tablename_';
 
   <Resource name="CMS_Tablename_" list={_Tablename_List} create={_Tablename_Create} edit={_Tablename_Edit} show={_Tablename_Show} />
   <Resource name="CMS_Tablename_" list={ListGuesser} create={EditGuesser} edit={EditGuesser} edit={ShowGuesser} /> 
@@ -18,6 +18,15 @@ const useStyles = makeStyles({
     '& img': { width: 60 }
   },
 });
+
+const useTxtData = {
+  page: {
+    tableName: '_Tablename_',
+  },
+  table: {
+    _createJsClassFiledCodes_
+  }
+};
 
 //分页列表页面
 export const _Tablename_List = (props) => {
@@ -52,9 +61,9 @@ export const _Tablename_List = (props) => {
 
   const classes = useStyles();
   return (
-    <List {...props} title="XX列表" sort={{ field: 'id', order: 'DESC' }} filters={<Filters />} bulkActionButtons={<AssetBulkActionButtons />} >
+    <List {...props}  title={useTxtData.page.tableName + '列表'} sort={{ field: 'id', order: 'DESC' }} filters={<Filters />} bulkActionButtons={<AssetBulkActionButtons />} >
       <Datagrid>
-        <TextField source="id" />
+        {/* <TextField source="id" /> */}
         {/* <TextField label="名称" source="Name" /> */}
         {/* <TextField label="排序" source="OrderNum" />  */}
         _createWebListCodes_
@@ -82,9 +91,9 @@ export const _Tablename_Show = (props) => {
   };
 
   return (
-    <Show {...props} actions={<ShowActions />}>
+    <Show title={'查看' + useTxtData.page.tableName} {...props} actions={<ShowActions />}>
       <SimpleShowLayout>
-        <TextField source="id" />
+        {/* <TextField source="id" /> */}
         {/* <TextField label="名称" source="Name" /> */}
         {/* <TextField label="排序" source="OrderNum" />  */}
           _createWebListCodes_
@@ -116,7 +125,7 @@ export const _Tablename_Edit = (props) => {
     );
   };
   return (
-    <Edit undoable={false} {...props} actions={<PostEditActions />}>
+    <Edit title={'编辑' + useTxtData.page.tableName} undoable={false} {...props} actions={<PostEditActions />}>
       <MyForm Edit={true} toolbar={<PostEditToolbar />} />
     </Edit>
   );
@@ -148,7 +157,7 @@ export const _Tablename_Create = (props) => {
   };
 
   return (
-    <Create undoable={false} {...props} actions={<PostCreateActions />}>
+    <Create title={'新增' + useTxtData.page.tableName} undoable={false} {...props} actions={<PostCreateActions />}>
       <MyForm Create={true} toolbar={<PostCreateToolbar />} />
     </Create>
   );

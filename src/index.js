@@ -9,7 +9,7 @@ const {
   sleep, readinput_str, readinput_int, alertAndQuit,
   createFieldsCodes, createFieldsCodesRemoveKey,
   writeFieldsCodes, writeFieldsCodesRemoveKey,
-  createWebListCodes,createWebFormCodes,
+  createWebListCodes,createWebFormCodes,createJsClassFiledCodes,
 } = require('./comm');
 
 
@@ -112,6 +112,7 @@ if (argv._.length == 0) {
 
           var _createWebListCodes = createWebListCodes(tablefields);
           var _createWebFormCodes = createWebFormCodes(tablefields);
+          var _createJsClassFiledCodes = createJsClassFiledCodes(tablefields);
 
           var folderpath = await new PowerShell().BrowseForFolder('选择文件夹');
           console.log(`folderpath: ` + folderpath);
@@ -141,7 +142,8 @@ if (argv._.length == 0) {
               [/_tablename_/gm, choose_tablename],
               [/_Tablename_/gm, Choose_tablename],
               [/_createWebListCodes_/gm, _createWebListCodes],
-              [/_createWebFormCodes_/gm, _createWebFormCodes]
+              [/_createWebFormCodes_/gm, _createWebFormCodes],
+              [/_createJsClassFiledCodes_/gm, _createJsClassFiledCodes]
             ],
             folderpath + '/' + choose_tablename + '/React-admin'
           );

@@ -85,7 +85,7 @@ var createWebListCodes = function (tablefields) {
     for (var i in tablefields) {
         //var type = _DealType(tablefields[i].type);
         var name = tablefields[i].field;
-        strs.push(`<TextField label="${name}" source="${name}" />`);
+        strs.push(`<TextField label={useTxtData.table.${name}} source="${name}" />`);
     }
     return strs.join('\r\n');
 }
@@ -96,18 +96,27 @@ var createWebFormCodes = function (tablefields) {
         var name = tablefields[i].field;
         switch (type) {
             case "int":
-                strs.push(`<NumberInput source="${name}" step={1} validate={[required()]} />`);
+                strs.push(`<NumberInput label={useTxtData.table.${name}} source="${name}" step={1} validate={[required()]} />`);
                 break;
             case "Double":
-                strs.push(`<NumberInput source="${name}" validate={[required()]} />`);
+                strs.push(`<NumberInput label={useTxtData.table.${name}} source="${name}" validate={[required()]} />`);
                 break;
             case "bool":
-                strs.push(`<BooleanInput source="${name}" validate={[required()]} />`);
+                strs.push(`<BooleanInput label={useTxtData.table.${name}} source="${name}" validate={[required()]} />`);
                 break;
             default:
-                strs.push(`<TextInput source="${name}" validate={[required()]} />`);
+                strs.push(`<TextInput label={useTxtData.table.${name}} source="${name}" validate={[required()]} />`);
                 break;
         }
+    }
+    return strs.join('\r\n');
+}
+var createJsClassFiledCodes = function (tablefields) {
+    var strs = [];
+    for (var i in tablefields) {
+        //var type = _DealType(tablefields[i].type);
+        var name = tablefields[i].field;
+        strs.push(`${name}: '${name}',`);
     }
     return strs.join('\r\n');
 }
@@ -154,5 +163,5 @@ module.exports = {
     sleep, readinput_str, readinput_int, alertAndQuit,
     createFieldsCodes, createFieldsCodesRemoveKey,
     writeFieldsCodes, writeFieldsCodesRemoveKey,
-    createWebListCodes, createWebFormCodes,
+    createWebListCodes, createWebFormCodes,createJsClassFiledCodes,
 };
