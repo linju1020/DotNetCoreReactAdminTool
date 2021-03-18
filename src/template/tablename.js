@@ -17,11 +17,14 @@ import {
   Show,
   SimpleShowLayout,
 
+  ReferenceField,
   TextField,
   ImageField,
   BooleanField,
 
   SimpleForm,
+  ReferenceInput,
+  SelectInput,
   TextInput,
   NumberInput,
   BooleanInput,

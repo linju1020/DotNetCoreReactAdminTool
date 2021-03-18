@@ -83,9 +83,16 @@ const _DealType = (_type) => {
 var createWebListCodes = function (tablefields) {
     var strs = [];
     for (var i in tablefields) {
-        //var type = _DealType(tablefields[i].type);
+        var type = _DealType(tablefields[i].type);
         var name = tablefields[i].field;
-        strs.push(`<TextField label={useTxtData.table.${name}} source="${name}" />`);
+        switch (type) {
+            case "bool":
+                strs.push(`<BooleanField label={useTxtData.table.${name}} source="${name}" />`);
+                break;
+            default:
+                strs.push(`<TextField label={useTxtData.table.${name}} source="${name}" />`);
+                break;
+        }
     }
     return strs.join('\r\n');
 }
@@ -163,5 +170,5 @@ module.exports = {
     sleep, readinput_str, readinput_int, alertAndQuit,
     createFieldsCodes, createFieldsCodesRemoveKey,
     writeFieldsCodes, writeFieldsCodesRemoveKey,
-    createWebListCodes, createWebFormCodes,createJsClassFiledCodes,
+    createWebListCodes, createWebFormCodes, createJsClassFiledCodes,
 };
