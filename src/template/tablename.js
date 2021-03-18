@@ -2,7 +2,37 @@ import * as React from 'react';
 import { Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { required, minLength, maxLength, minValue, maxValue, number, regex, email, choices } from 'react-admin';
-import { useRedirect, List, Datagrid, TextField, Filter, TextInput, BooleanInput, EditButton, Edit, Create, SimpleForm, NumberInput, BulkDeleteWithConfirmButton, Button, SaveButton, Toolbar, TopToolbar, DeleteWithConfirmButton, Show, SimpleShowLayout, ImageField, ShowButton } from 'react-admin';
+import {
+  useRedirect,
+  List,
+  Datagrid,
+  Filter,
+  Edit,
+  Create,
+  
+  Toolbar,
+  TopToolbar,
+  DeleteWithConfirmButton,
+  BulkDeleteWithConfirmButton,
+  Show,
+  SimpleShowLayout,
+
+  TextField,
+  ImageField,
+  BooleanField,
+
+  SimpleForm,
+  TextInput,
+  NumberInput,
+  BooleanInput,
+  NullableBooleanInput,
+
+  Button,
+  EditButton,
+  ShowButton,
+  SaveButton,
+} from 'react-admin';
+import { UpLoadFile } from './custom/UpLoadFile';
 import { ArrowBack } from '@material-ui/icons';
 //import ResetOrderNum from './_tablename__ResetOrderNum';
 
@@ -61,7 +91,7 @@ export const _Tablename_List = (props) => {
 
   const classes = useStyles();
   return (
-    <List {...props}  title={useTxtData.page.tableName + '列表'} sort={{ field: 'id', order: 'DESC' }} filters={<Filters />} bulkActionButtons={<AssetBulkActionButtons />} >
+    <List {...props} title={useTxtData.page.tableName + '列表'} sort={{ field: 'id', order: 'DESC' }} filters={<Filters />} bulkActionButtons={<AssetBulkActionButtons />} >
       <Datagrid>
         {/* <TextField source="id" /> */}
         {/* <TextField label="名称" source="Name" /> */}
@@ -90,6 +120,7 @@ export const _Tablename_Show = (props) => {
     );
   };
 
+  const classes = useStyles();
   return (
     <Show title={'查看' + useTxtData.page.tableName} {...props} actions={<ShowActions />}>
       <SimpleShowLayout>
