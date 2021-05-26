@@ -6,7 +6,7 @@ using MediatR;
 
 namespace @@@
 {
-    [Route("Admin/[Controller]/[Action]")]
+    [Route("XXXXX/[Controller]/[Action]")]
     [ApiGroup(ApiGroupNames.XXXXX)]
     public class CMS_Tablename_Controller : BaseController
     {
