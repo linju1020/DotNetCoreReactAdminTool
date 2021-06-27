@@ -64,8 +64,10 @@ const _DealType = (_type) => {
         case 'double':
         case 'money':
         case 'float8':
-        case 'numeric':
             return 'Double';
+
+        case 'numeric':
+            return 'decimal';
 
         case 'varchar':
         case 'text':
