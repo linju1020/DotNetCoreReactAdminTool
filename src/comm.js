@@ -51,23 +51,23 @@ function alertAndQuit(msg = '') {
 const _DealType = (_type) => {
     switch (_type) {
         case 'uuid':
-            return 'Guid';
+            return 'Guid?';
 
         case 'int4':
         case 'int8':
         case 'int16':
         case 'int32':
         case 'serial':
-            return 'int';
+            return 'int?';
 
         case 'double':
         case 'money':
         case 'float8':
-            return 'Double';
+            return 'Double?';
 
         case 'decimal':
         case 'numeric':
-            return 'decimal';
+            return 'decimal?';
 
         case 'varchar':
         case 'text':
@@ -75,14 +75,14 @@ const _DealType = (_type) => {
 
         case 'boolean':
         case 'bool':
-            return 'bool';
+            return 'bool?';
 
         case 'timestamp':
         case 'date':
-            return 'DateTime';
+            return 'DateTime?';
 
     }
-    return "XXX";
+    return "XXX[_type]";
 }
 
 
