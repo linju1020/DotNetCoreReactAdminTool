@@ -60,12 +60,12 @@ const _DealType = (_type) => {
         case 'serial':
             return 'int';
 
-        case 'decimal':
         case 'double':
         case 'money':
         case 'float8':
             return 'Double';
 
+        case 'decimal':
         case 'numeric':
             return 'decimal';
 
