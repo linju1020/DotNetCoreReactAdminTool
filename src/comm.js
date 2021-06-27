@@ -50,6 +50,9 @@ function alertAndQuit(msg = '') {
 
 const _DealType = (_type) => {
     switch (_type) {
+        case 'uuid':
+            return 'Guid';
+
         case 'int4':
         case 'int8':
         case 'int16':
@@ -61,6 +64,7 @@ const _DealType = (_type) => {
         case 'double':
         case 'money':
         case 'float8':
+        case 'numeric':
             return 'Double';
 
         case 'varchar':
