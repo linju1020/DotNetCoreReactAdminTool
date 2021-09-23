@@ -112,7 +112,7 @@ export const _Tablename_List = (props) => {
   const classes = useStyles();
   return (
     <React.Fragment>
-      <List {...props} title={useTxtData.page.tableName + '列表'} sort={{ field: 'id', order: 'DESC' }} filters={<Filters />} bulkActionButtons={<AssetBulkActionButtons />} actions={<ListActions />}>
+      <List {...props} title={useTxtData.page.tableName + '列表'} sort={{ field: 'id', order: 'DESC' }} filters={<Filters />} bulkActionButtons={<AssetBulkActionButtons />} actions={<ListActions />} empty={false}>
         <Datagrid>
           {/* <TextField source="id" /> */}
           {/* <TextField label="名称" source="Name" /> */}
