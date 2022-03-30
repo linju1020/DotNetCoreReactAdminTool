@@ -51,6 +51,16 @@ function PowerShell() {
   };
 
   this.SavaFile = (basepath, templatefilename, choose_tablename, replaces, savefolder) => {
+    
+    var new_Template_file = this.CreateFile(basepath, templatefilename, choose_tablename, replaces);
+
+    var newfilepath = savefolder + '/' + templatefilename.replace(/tablename[0-9]{0,1}/, choose_tablename);
+    //console.log(`newfilepath:`+newfilepath);
+    if (!fs.existsSync(savefolder)) fs.mkdirSync(savefolder);
+    fs.writeFileSync(newfilepath, new_Template_file);
+  };
+
+  this.CreateFile = (basepath, templatefilename, choose_tablename, replaces) => {
     var Template_file = fs
       .readFileSync(basepath + '/template/' + templatefilename)
       .toString();
@@ -59,11 +69,14 @@ function PowerShell() {
     for (var i in replaces) {
       new_Template_file = new_Template_file.replace(replaces[i][0], replaces[i][1]);
     }
+    console.log(`######################################`);
+    console.log(`######################################`);
+    console.log(`###${choose_tablename}################`);
     console.log(new_Template_file);
-    var newfilepath = savefolder + '/' + templatefilename.replace(/tablename[0-9]{0,1}/, choose_tablename);
-    //console.log(`newfilepath:`+newfilepath);
-    if (!fs.existsSync(savefolder)) fs.mkdirSync(savefolder);
-    fs.writeFileSync(newfilepath, new_Template_file);
+    console.log(`###${choose_tablename}#END############`);
+    console.log(`######################################`);
+    console.log(`######################################`);
+    return new_Template_file;
   };
 }
 

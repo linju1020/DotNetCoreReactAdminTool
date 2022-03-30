@@ -35,7 +35,7 @@ var homepath = getHomeCrossplatform();
 var dbfilepath = homepath + '/db.json';
 //console.log(dbfilepath);
 
-if (fs.existsSync(dbfilepath)) {} else {
+if (fs.existsSync(dbfilepath)) { } else {
   fs.writeFileSync(dbfilepath, '');
 }
 
@@ -107,28 +107,29 @@ if (argv._.length == 0) {
       console.log('Choose the following function:');
       console.log('0. Create Standard React-Admin template code');
       console.log('1. Create Concise React-Admin template code');
+      console.log('2. Create Table SqlSugar CRUD template code');
       var function_number = readinput_int({
         tip: 'Choose function by number'
       });
+
+      // Create Template CODE    choose_tablename tablefields
+      var Choose_tablename = choose_tablename[0].toUpperCase() + choose_tablename.substring(1, choose_tablename.length); //第一个字母大写
+      var controller_namespace_prefix = choose_connection['controller_namespace_prefix'];
+      var commandsquerys_namespace_prefix = choose_connection['commandsquerys_namespace_prefix'];
+      var model_namespace_prefix = choose_connection['model_namespace_prefix'];
+
+      var ModelFieldCode = createFieldsCodes(tablefields);
+      var ModelFieldCodeRemoveKey = createFieldsCodesRemoveKey(tablefields);
+      var WriteFieldCode = writeFieldsCodes(tablefields);
+      var WriteFieldCodeRemoveKey = writeFieldsCodesRemoveKey(tablefields);
+
+      var _createWebListCodes = createWebListCodes(tablefields);
+      var _createWebFormCodes = createWebFormCodes(tablefields);
+      var _createJsClassFiledCodes = createJsClassFiledCodes(tablefields);
+
       switch (function_number) {
         case 0:
         case 1:
-          // Create Template CODE    choose_tablename tablefields
-
-          var Choose_tablename = choose_tablename[0].toUpperCase() + choose_tablename.substring(1, choose_tablename.length); //第一个字母大写
-
-          var controller_namespace_prefix = choose_connection['controller_namespace_prefix'];
-          var commandsquerys_namespace_prefix = choose_connection['commandsquerys_namespace_prefix'];
-          var model_namespace_prefix = choose_connection['model_namespace_prefix'];
-
-          var ModelFieldCode = createFieldsCodes(tablefields);
-          var ModelFieldCodeRemoveKey = createFieldsCodesRemoveKey(tablefields);
-          var WriteFieldCode = writeFieldsCodes(tablefields);
-          var WriteFieldCodeRemoveKey = writeFieldsCodesRemoveKey(tablefields);
-
-          var _createWebListCodes = createWebListCodes(tablefields);
-          var _createWebFormCodes = createWebFormCodes(tablefields);
-          var _createJsClassFiledCodes = createJsClassFiledCodes(tablefields);
 
           var folderpath = await new PowerShell().BrowseForFolder('选择文件夹');
           console.log(`folderpath: ` + folderpath);
@@ -299,6 +300,22 @@ if (argv._.length == 0) {
 
           alertAndQuit('Create Template Success!');
 
+          break;
+        case 2:
+          new PowerShell().CreateFile(
+            dirpath,
+            'SqlSugar/CRUD.cs', Choose_tablename,
+            [
+              [/_tablename_/gm, choose_tablename],
+              [/_Tablename_/gm, Choose_tablename],
+              [/@@@@/gm, model_namespace_prefix],
+              [/@@@/gm, commandsquerys_namespace_prefix],
+              [/_ModelFieldCode_/gm, ModelFieldCode],
+              [/_ModelFieldCodeRemoveKey_/gm, ModelFieldCodeRemoveKey],
+              [/_WriteFieldCode_/gm, WriteFieldCode],
+              [/_WriteFieldCodeRemoveKey_/gm, WriteFieldCodeRemoveKey]
+            ]
+          );
           break;
         default:
           alertAndQuit('number Out of range');
