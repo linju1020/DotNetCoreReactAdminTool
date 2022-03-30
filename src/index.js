@@ -316,6 +316,8 @@ if (argv._.length == 0) {
               [/_WriteFieldCodeRemoveKey_/gm, WriteFieldCodeRemoveKey]
             ]
           );
+
+          alertAndQuit('Create Success!');
           break;
         default:
           alertAndQuit('number Out of range');

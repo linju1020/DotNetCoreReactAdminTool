@@ -48,11 +48,11 @@ public class _Tablename_Controller : BaseController
         {
             using (var db = connectionProvider.GetSqlSugarClient())
             {
-                var model = await db.Queryable<_tablename_>().Where((p) => p.id == id).FirstAsync();
-                if (model.IsNull()) throw new MyException("数据为null");
+                var item = await db.Queryable<_tablename_>().Where((p) => p.id == id).FirstAsync();
+                if (item.IsNull()) throw new MyException("数据为null");
 
                 result.Code = 1;
-                result.Result = this.mapper.Map<PropertyOrderDTO>(model);
+                result.Result = this.mapper.Map<_Tablename_DTO>(item);
             }
         }
         catch (MyException mce)
@@ -68,7 +68,7 @@ public class _Tablename_Controller : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create_Tablename_([FromBody] _Tablename_DTO model)
+    public async Task<IActionResult> Create_Tablename_([FromBody] _Tablename_DTO request)
     {
         var result = new Result_Obj();
         try
@@ -95,15 +95,15 @@ public class _Tablename_Controller : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Update_Tablename_([FromQuery] int id, [FromBody] _Tablename_DTO model)
+    public async Task<IActionResult> Update_Tablename_([FromQuery] int id, [FromBody] _Tablename_DTO request)
     {
         var result = new Result_Obj();
         try
         {
             using (var db = connectionProvider.GetSqlSugarClient())
             {
-                var model = await db.Queryable<_tablename_>().Where((p) => p.id == id).FirstAsync();
-                if (model.IsNull()) throw new MyException("数据为null");
+                var item = await db.Queryable<_tablename_>().Where((p) => p.id == id).FirstAsync();
+                if (item.IsNull()) throw new MyException("数据为null");
 
                 _WriteFieldCodeRemoveKey_
 
