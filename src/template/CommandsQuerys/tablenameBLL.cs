@@ -47,26 +47,46 @@ namespace @@@._Tablename_BLL
     {
         private readonly ILogger<_Tablename_GetListQueryHandler> logger;
         private readonly IMapper mapper;
+        private readonly IConnectionProvider connectionProvider;
 
-        public _Tablename_GetListQueryHandler(ILogger<_Tablename_GetListQueryHandler> logger, IMapper mapper)
+        public _Tablename_GetListQueryHandler(ILogger<_Tablename_GetListQueryHandler> logger, IMapper mapper, IConnectionProvider connectionProvider)
         {
             this.logger = logger;
             this.mapper = mapper;
+            this.connectionProvider = connectionProvider;
         }
 
         public async Task<_Tablename_GetListQueryDTO> Handle(_Tablename_GetListQuery request, CancellationToken cancellationToken)
         {
-            ParamCommAnd paramCommAnd = new ParamCommAnd();
-            if (request.id != null)
-                paramCommAnd.Add("id", request.id);
+            //ParamCommAnd paramCommAnd = new ParamCommAnd();
+            //if (request.id != null)
+            //    paramCommAnd.Add("id", request.id);
 
-            string where; Dictionary<string, object> param;
-            paramCommAnd.CreateWhere(out where, out param);
+            //string where; Dictionary<string, object> param;
+            //paramCommAnd.CreateWhere(out where, out param);
 
-            PagerEx<_Tablename_> pager = _Tablename_.Pager(where, param, request._page, request._pagesize, request._sort, request._order);
-            var list = await pager.GetDataList();
-             
-            return new _Tablename_GetListQueryDTO() { data = this.mapper.Map<List<_Tablename_DTO>>(list), total = pager.RecordCount };
+            // PagerEx<_Tablename_> pager = _Tablename_.Pager(where, param, request._page, request._pagesize, request._sort, request._order);
+            // var list = await pager.GetDataList(); 
+            // return new _Tablename_GetListQueryDTO() { data = this.mapper.Map<List<_Tablename_DTO>>(list), total = pager.RecordCount };
+
+            using (var db = connectionProvider.GetSqlSugarClient())
+            {
+                var pageIndex = request._page;
+                var pageSize = request._pagesize;
+                //pageindex是从1开始的不是从零开始的
+                pageIndex = Math.Max(0, pageIndex);
+                RefAsync<int> totalCount = 0;
+
+                var list = await db.Queryable<_Tablename_>()
+                                    //.LeftJoin<XXX>((x, x2) => x.1 == x2.2)
+                                    .Where((t) => t.id == request.id)
+                                    .OrderBy(request._sort.JGetOrderByStr(request._order))
+                                    //.Select((t) => new{t})
+                                    //.WriteSQLLog()
+                                    .ToPageListAsync(pageIndex + 1, pageSize, totalCount);
+
+                return new _Tablename_GetListQueryDTO() { data = this.mapper.Map<List<_Tablename_DTO>>(list), total = totalCount };
+            }
         }
     }
 
