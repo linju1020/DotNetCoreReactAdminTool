@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Comm.ReactAdmin;
+using SqlSugar;
 using @@@@;
 
 namespace @@@._Tablename_BLL
