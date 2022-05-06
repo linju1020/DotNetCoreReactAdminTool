@@ -105,8 +105,8 @@ if (argv._.length == 0) {
       }
 
       console.log('Choose the following function:');
-      console.log('0. Create Standard React-Admin template code');
-      console.log('1. Create Concise React-Admin template code');
+      console.log('0. Create Standard React-Admin template code (SqlSugar)');
+      console.log('1. Create Concise React-Admin template code (SqlSugar)');
       console.log('2. Create Table SqlSugar CRUD template code');
       var function_number = readinput_int({
         tip: 'Choose function by number'

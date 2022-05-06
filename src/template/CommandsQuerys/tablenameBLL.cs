@@ -105,17 +105,29 @@ namespace @@@._Tablename_BLL
     {
         private readonly ILogger<_Tablename_GetOneQueryHandler> logger;
         private readonly IMapper mapper;
+         private readonly IConnectionProvider connectionProvider;
 
-        public _Tablename_GetOneQueryHandler(ILogger<_Tablename_GetOneQueryHandler> logger, IMapper mapper)
+        public _Tablename_GetOneQueryHandler(ILogger<_Tablename_GetOneQueryHandler> logger, IMapper mapper,IConnectionProvider connectionProvider)
         {
             this.logger = logger;
             this.mapper = mapper;
+            this.connectionProvider = connectionProvider;
         }
 
         public async Task<_Tablename_DTO> Handle(_Tablename_GetOneQuery request, CancellationToken cancellationToken)
         {
-            var item = await _Tablename_.GetModel(request.id);
-            return this.mapper.Map<_Tablename_DTO>(item);
+            //var item = await _Tablename_.GetModel(request.id);
+            //return this.mapper.Map<_Tablename_DTO>(item);
+            using (var db = connectionProvider.GetSqlSugarClient())
+            {
+                var item = await db.Queryable<_Tablename_>()
+                                    //.LeftJoin<XXX>((x, x2) => x.1 == x2.2)
+                                    .Where((t) => t.id == request.id)
+                                    //.Select((t) => new{t})
+                                    //.WriteSQLLog()
+                                    .FirstAsync();
+                return this.mapper.Map<_Tablename_DTO>(item);
+            }
         }
     }
 
@@ -133,23 +145,34 @@ namespace @@@._Tablename_BLL
     {
         private readonly ILogger<_Tablename_GetManyQueryHandler> logger;
         private readonly IMapper mapper;
+        private readonly IConnectionProvider connectionProvider;
 
-        public _Tablename_GetManyQueryHandler(ILogger<_Tablename_GetManyQueryHandler> logger, IMapper mapper)
+        public _Tablename_GetManyQueryHandler(ILogger<_Tablename_GetManyQueryHandler> logger, IMapper mapper,IConnectionProvider connectionProvider)
         {
             this.logger = logger;
             this.mapper = mapper;
+            this.connectionProvider = connectionProvider;
         }
 
         public async Task<List<_Tablename_DTO>> Handle(_Tablename_GetManyQuery request, CancellationToken cancellationToken)
         {
-            ParamCommAnd paramCommAnd = new ParamCommAnd();
-            paramCommAnd.Add("id", request.ids, "in");
+            // ParamCommAnd paramCommAnd = new ParamCommAnd();
+            // paramCommAnd.Add("id", request.ids, "in");
+            // string where; Dictionary<string, object> param;
+            // paramCommAnd.CreateWhere(out where, out param);
+            // var items = await _Tablename_.GetModelList(where, param).GetList();
+            // return this.mapper.Map<List<_Tablename_DTO>>(items);
 
-            string where; Dictionary<string, object> param;
-            paramCommAnd.CreateWhere(out where, out param);
-
-            var items = await _Tablename_.GetModelList(where, param).GetList();
-            return this.mapper.Map<List<_Tablename_DTO>>(items);
+            using (var db = connectionProvider.GetSqlSugarClient())
+            {
+                var items = await db.Queryable<_Tablename_>()
+                                    //.LeftJoin<XXX>((x, x2) => x.1 == x2.2)
+                                    .Where((t) => request.ids.Contains(it.id))
+                                    //.Select((t) => new{t})
+                                    //.WriteSQLLog()
+                                    .ToListAsync();
+                return this.mapper.Map<List<_Tablename_DTO>>(items);
+            }
         }
     }
 
