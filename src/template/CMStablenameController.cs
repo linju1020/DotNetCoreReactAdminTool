@@ -6,8 +6,8 @@ using MediatR;
 
 namespace @@@
 {
-    [Route("XXXXX/[Controller]/[Action]")]
-    [ApiGroup(ApiGroupNames.XXXXX)]
+    [Route("Admin/[Controller]/[Action]")]
+    [ApiGroup(ApiGroupNames.Admin)]
     public class CMS_Tablename_Controller : BaseController
     {
         private readonly ILogger<CMS_Tablename_Controller> logger;

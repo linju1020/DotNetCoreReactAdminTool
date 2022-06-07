@@ -80,7 +80,7 @@ namespace @@@._Tablename_BLL
 
                 var list = await db.Queryable<_Tablename_>()
                                     //.LeftJoin<XXX>((x, x2) => x.1 == x2.2)
-                                    .Where((t) => t.id == request.id)
+                                    .Where((t) => t.id.lb_IsNotNullAndZeroAndDo(request.id, "="))
                                     .OrderBy(request._sort.JGetOrderByStr(request._order))
                                     //.Select((t) => new{t})
                                     //.WriteSQLLog()
@@ -167,7 +167,7 @@ namespace @@@._Tablename_BLL
             {
                 var items = await db.Queryable<_Tablename_>()
                                     //.LeftJoin<XXX>((x, x2) => x.1 == x2.2)
-                                    .Where((t) => request.ids.Contains(it.id))
+                                    .Where((t) => request.ids.Contains(t.id))
                                     //.Select((t) => new{t})
                                     //.WriteSQLLog()
                                     .ToListAsync();
