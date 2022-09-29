@@ -3,8 +3,10 @@ import { Fragment } from 'react';
 import { Route } from 'react-router';
 import { Drawer } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { Form } from 'react-final-form';
 import { required, minLength, maxLength, minValue, maxValue, number, regex, email, choices } from 'react-admin';
 import {
+  useListContext,
   useRedirect,
   List,
   Datagrid,
@@ -38,8 +40,9 @@ import {
   SaveButton,
   CreateButton
 } from 'react-admin';
-import { UpLoadFile } from './custom/UpLoadFile';
-import { ArrowBack } from '@material-ui/icons';
+import { Button as CButton, Box } from '@material-ui/core';
+import { PreviewImage, UpLoadFile } from './custom/UpLoadFile';
+import { ArrowBack, Search } from '@material-ui/icons';
 //import ResetOrderNum from './_tablename__ResetOrderNum';
 
 {/* 
@@ -70,14 +73,42 @@ export const _Tablename_List = (props) => {
   const redirect = useRedirect();
 
   //筛选器模块
+  // const Filters = (props) => {
+  //   return (
+  //     <Filter {...props}>
+  //       <TextInput label="ID" source="id" alwaysOn resettable />
+  //       {/* <TextInput label="XX" source="name" alwaysOn resettable /> */}
+  //     </Filter>
+  //   );
+  // };
   const Filters = (props) => {
+    const { displayedFilters, filterValues, setFilters, hideFilter, } = useListContext();
+    if (props.context === "button") return null;
+    const onSubmit = values => { if (Object.keys(values).length > 0) { setFilters(values); } else { setFilters({}, []); } };
+    const resetFilter = () => { setFilters({}, []); };
     return (
-      <Filter {...props}>
-        <TextInput label="ID" source="id" alwaysOn resettable />
-        {/* <TextInput label="XX" source="name" alwaysOn resettable /> */}
-      </Filter>
+      <div>
+        <Form onSubmit={onSubmit} initialValues={filterValues}>
+          {({ handleSubmit }) => (
+            <form onSubmit={handleSubmit}>
+              <Box display='flex' alignItems='center'>
+                <Box component="span" mr={2}>
+                  <TextInput label="ID" source="id" alwaysOn resettable />
+                </Box>
+                <Box component="span" mr={2} mb={2.5}>
+                  <CButton variant="contained" color="primary" type="submit" startIcon={<Search />}>搜索</CButton>
+                </Box>
+                <Box component="span" mr={2} mb={2.5}>
+                  <CButton variant="outlined" onClick={resetFilter}>重置</CButton>
+                </Box>
+              </Box>
+            </form>
+          )}
+        </Form>
+      </div>
     );
   };
+
   //批量操作模块
   const AssetBulkActionButtons = (props) => {
     return (
