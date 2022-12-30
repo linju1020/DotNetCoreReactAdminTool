@@ -53,6 +53,7 @@ const _DealType = (_type) => {
         case 'uuid':
             return 'Guid?';
 
+        case 'int':
         case 'int4':
         case 'int8':
         case 'int16':
@@ -62,6 +63,7 @@ const _DealType = (_type) => {
 
         case 'double':
         case 'money':
+        case 'float':
         case 'float8':
             return 'Double?';
 
@@ -69,15 +71,19 @@ const _DealType = (_type) => {
         case 'numeric':
             return 'decimal?';
 
+        case 'nvarchar':
         case 'varchar':
+        case 'ntext':
         case 'text':
             return 'string';
 
         case 'boolean':
         case 'bool':
+        case 'bit':
             return 'bool?';
 
         case 'timestamp':
+        case 'datetime':
         case 'date':
             return 'DateTime?';
 

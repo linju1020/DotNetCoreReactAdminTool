@@ -3,6 +3,7 @@
 const yargs = require('yargs');
 var fs = require('fs-extra');
 var DB = require('./db');
+var DB_MSSQL = require('./db_mssql');
 var PowerShell = require('./powershell');
 const {
   getHomeCrossplatform,
@@ -54,53 +55,118 @@ if (argv._.length == 0) {
         max: datas.length
       });
       var choose_connection = datas[connection_index];
+      // console.log('choose_connection', choose_connection)
 
-      var conString = `postgres://${choose_connection['userid']}:${choose_connection['userpwd']}@${choose_connection['ip']}:${choose_connection['port']}/${choose_connection['database']}`;
-      var client = new DB();
-
-      var tablenames;
-      if (await client.setConnectStr(conString)) {
-        tablenames = await client.getRows(
-          "select tablename from pg_tables where schemaname='public'",
-          []
-        );
-        if (tablenames != null) {
-          console.table(tablenames);
-        } else {
-          alertAndQuit('read tablenames err');
+      var choose_tablename = '';
+      var conString = ''; var client;
+      if (choose_connection.IsMsSQL == true) {
+        conString = {
+          user: choose_connection['userid'],
+          password: choose_connection['userpwd'],
+          database: choose_connection['database'],
+          server: choose_connection['ip'],
+          pool: {
+            max: 10,
+            min: 0,
+            idleTimeoutMillis: 30000
+          },
+          options: {
+            encrypt: false//必须加上
+          }
         }
-      }
+        client = new DB_MSSQL();
+        var tablenames;
+        if (client.setConnectStr(conString)) {
+          tablenames = await client.getRows(
+            "Select Name FROM SysObjects Where XType='U' orDER BY Name",
+            []
+          );
+          if (tablenames != null) {
+            console.table(tablenames);
+          } else {
+            alertAndQuit('read tablenames err');
+          }
+        }
 
-      var table_index = readinput_int({
-        tip: 'Choose table by index',
-        max: tablenames.length
-      });
-      var choose_tablename = tablenames[table_index].tablename;
-      console.log(choose_tablename);
+        var table_index = readinput_int({
+          tip: 'Choose table by index',
+          max: tablenames.length
+        });
+        choose_tablename = tablenames[table_index].Name;
+        console.log(choose_tablename);
 
-      var tablefields;
-      if (await client.setConnectStr(conString)) {
-        var tablefildsql =
-          'SELECT a.attnum,' +
-          ' a.attname AS field,' +
-          ' t.typname AS type,' +
-          ' a.attlen AS length,' +
-          ' a.atttypmod AS lengthvar,' +
-          ' a.attnotnull AS notnull,' +
-          ' b.description AS comment' +
-          ' FROM pg_class c,pg_attribute a' +
-          ' LEFT OUTER JOIN pg_description b ON a.attrelid=b.objoid AND a.attnum = b.objsubid,' +
-          ' pg_type t' +
-          ` WHERE c.relname = '${choose_tablename}'` +
-          ' and a.attnum > 0' +
-          ' and a.attrelid = c.oid' +
-          ' and a.atttypid = t.oid' +
-          ' ORDER BY a.attnum;';
-        tablefields = await client.getRows(tablefildsql, []);
+        var tablefields;
+        var tablefildsql = `
+                  SELECT      
+                      SC.name field, 
+                      SC.colid [index], 
+                      ST.name [type] 
+                  FROM        
+                      sysobjects   SO, -- 对象表 
+                      syscolumns   SC, -- 列名表 
+                      systypes     ST  -- 数据类型表  
+                  WHERE         
+                      SO.id = SC.id  
+                      AND   SC.xtype = ST.xusertype 
+                      AND   SO.name = '${choose_tablename}' 
+                  ORDER BY   SC.colorder       `;
+        tablefields = await client.getRows(tablefildsql);
         if (tablefields != null) {
           console.table(tablefields);
         } else {
           alertAndQuit('read table fields err');
+        }
+
+      }
+      else {
+        conString = `postgres://${choose_connection['userid']}:${choose_connection['userpwd']}@${choose_connection['ip']}:${choose_connection['port']}/${choose_connection['database']}`;
+        client = new DB();
+
+
+        var tablenames;
+        if (await client.setConnectStr(conString)) {
+          tablenames = await client.getRows(
+            "select tablename from pg_tables where schemaname='public'",
+            []
+          );
+          if (tablenames != null) {
+            console.table(tablenames);
+          } else {
+            alertAndQuit('read tablenames err');
+          }
+        }
+
+        var table_index = readinput_int({
+          tip: 'Choose table by index',
+          max: tablenames.length
+        });
+        choose_tablename = tablenames[table_index].tablename;
+        console.log(choose_tablename);
+
+        var tablefields;
+        if (await client.setConnectStr(conString)) {
+          var tablefildsql =
+            'SELECT a.attnum,' +
+            ' a.attname AS field,' +
+            ' t.typname AS type,' +
+            ' a.attlen AS length,' +
+            ' a.atttypmod AS lengthvar,' +
+            ' a.attnotnull AS notnull,' +
+            ' b.description AS comment' +
+            ' FROM pg_class c,pg_attribute a' +
+            ' LEFT OUTER JOIN pg_description b ON a.attrelid=b.objoid AND a.attnum = b.objsubid,' +
+            ' pg_type t' +
+            ` WHERE c.relname = '${choose_tablename}'` +
+            ' and a.attnum > 0' +
+            ' and a.attrelid = c.oid' +
+            ' and a.atttypid = t.oid' +
+            ' ORDER BY a.attnum;';
+          tablefields = await client.getRows(tablefildsql, []);
+          if (tablefields != null) {
+            console.table(tablefields);
+          } else {
+            alertAndQuit('read table fields err');
+          }
         }
       }
 
@@ -379,6 +445,12 @@ if (argv._.length == 1) {
         required: true
       });
 
+      var isMsSQL = readinput_str({
+        tip: 'Is MSSQL? y or n',
+        defaultValue: 'n'
+      });
+      if (isMsSQL.toLowerCase() != 'y') isMsSQL = 'n';
+
       console.log('Please confirm the following information:');
       console.log('     [Controller] Namespace Prefix:' + controller_namespace_prefix);
       console.log('     [CommandsQuerys] Namespace Prefix:' + commandsquerys_namespace_prefix);
@@ -404,6 +476,8 @@ if (argv._.length == 1) {
           userid,
           userpwd
         };
+        if (isMsSQL.toLowerCase() === 'y')
+          new_data = { ...new_data, IsMsSQL: true };
         var old_data = fs.readFileSync(dbfilepath).toString().trim();
         var datas = old_data.length < 1 ? [] : JSON.parse(old_data);
         datas.push(new_data);
