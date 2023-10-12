@@ -54,7 +54,8 @@ function PowerShell() {
     
     var new_Template_file = this.CreateFile(basepath, templatefilename, choose_tablename, replaces);
 
-    var newfilepath = savefolder + '/' + templatefilename.replace(/tablename[0-9]{0,1}/, choose_tablename);
+    var newfilepath = savefolder + '/' + 
+              templatefilename.replace(/tablename_v4/, choose_tablename).replace(/tablename[0-9]{0,1}/, choose_tablename);
     //console.log(`newfilepath:`+newfilepath);
     if (!fs.existsSync(savefolder)) fs.mkdirSync(savefolder);
     fs.writeFileSync(newfilepath, new_Template_file);

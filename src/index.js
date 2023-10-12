@@ -174,6 +174,7 @@ if (argv._.length == 0) {
       console.log('0. Create Standard React-Admin template code (SqlSugar)');
       console.log('1. Create Concise React-Admin template code (SqlSugar)');
       console.log('2. Create Table SqlSugar CRUD template code');
+      console.log('3. Create Standard React-Admin(V4) template code (SqlSugar)');
       var function_number = readinput_int({
         tip: 'Choose function by number'
       });
@@ -196,6 +197,7 @@ if (argv._.length == 0) {
       switch (function_number) {
         case 0:
         case 1:
+        case 3:
 
           var folderpath = await new PowerShell().BrowseForFolder('选择文件夹');
           console.log(`folderpath: ` + folderpath);
@@ -220,7 +222,8 @@ if (argv._.length == 0) {
           //js
           new PowerShell().SavaFile(
             dirpath,
-            function_number == 1 ? 'tablename2.js' : 'tablename.js', choose_tablename,
+            function_number == 1 ? 'tablename2.js' : (function_number == 3 ? 'tablename_v4.tsx' : 'tablename.js'),
+            choose_tablename,
             [
               [/_tablename_/gm, choose_tablename],
               [/_Tablename_/gm, Choose_tablename],
@@ -279,90 +282,6 @@ if (argv._.length == 0) {
             ],
             folderpath + '/' + choose_tablename
           );
-          /* new PowerShell().SavaFile(
-            dirpath,
-            'CommandsQuerys/tablename/Delete.cs', choose_tablename,
-            [
-              [/_tablename_/gm, choose_tablename],
-              [/_Tablename_/gm, Choose_tablename],
-              [/@@@/gm, controller_namespace_prefix],
-              [/_ModelFieldCode_/gm, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gm, ModelFieldCodeRemoveKey],
-              [/_WriteFieldCode_/gm, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gm, WriteFieldCodeRemoveKey]
-            ],
-            folderpath + '/' + choose_tablename
-          );
-          new PowerShell().SavaFile(
-            dirpath,
-            'CommandsQuerys/tablename/DeleteMany.cs', choose_tablename,
-            [
-              [/_tablename_/gm, choose_tablename],
-              [/_Tablename_/gm, Choose_tablename],
-              [/@@@/gm, controller_namespace_prefix],
-              [/_ModelFieldCode_/gm, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gm, ModelFieldCodeRemoveKey],
-              [/_WriteFieldCode_/gm, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gm, WriteFieldCodeRemoveKey]
-            ],
-            folderpath + '/' + choose_tablename
-          );
-          new PowerShell().SavaFile(
-            dirpath,
-            'CommandsQuerys/tablename/GetList.cs', choose_tablename,
-            [
-              [/_tablename_/gm, choose_tablename],
-              [/_Tablename_/gm, Choose_tablename],
-              [/@@@/gm, controller_namespace_prefix],
-              [/_ModelFieldCode_/gm, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gm, ModelFieldCodeRemoveKey],
-              [/_WriteFieldCode_/gm, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gm, WriteFieldCodeRemoveKey]
-            ],
-            folderpath + '/' + choose_tablename
-          );
-          new PowerShell().SavaFile(
-            dirpath,
-            'CommandsQuerys/tablename/GetMany.cs', choose_tablename,
-            [
-              [/_tablename_/gm, choose_tablename],
-              [/_Tablename_/gm, Choose_tablename],
-              [/@@@/gm, controller_namespace_prefix],
-              [/_ModelFieldCode_/gm, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gm, ModelFieldCodeRemoveKey],
-              [/_WriteFieldCode_/gm, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gm, WriteFieldCodeRemoveKey]
-            ],
-            folderpath + '/' + choose_tablename
-          );
-          new PowerShell().SavaFile(
-            dirpath,
-            'CommandsQuerys/tablename/GetOne.cs', choose_tablename,
-            [
-              [/_tablename_/gm, choose_tablename],
-              [/_Tablename_/gm, Choose_tablename],
-              [/@@@/gm, controller_namespace_prefix],
-              [/_ModelFieldCode_/gm, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gm, ModelFieldCodeRemoveKey],
-              [/_WriteFieldCode_/gm, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gm, WriteFieldCodeRemoveKey]
-            ],
-            folderpath + '/' + choose_tablename
-          );
-          new PowerShell().SavaFile(
-            dirpath,
-            'CommandsQuerys/tablename/ResetOrderNum.cs', choose_tablename,
-            [
-              [/_tablename_/gm, choose_tablename],
-              [/_Tablename_/gm, Choose_tablename],
-              [/@@@/gm, controller_namespace_prefix],
-              [/_ModelFieldCode_/gm, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gm, ModelFieldCodeRemoveKey],
-              [/_WriteFieldCode_/gm, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gm, WriteFieldCodeRemoveKey]
-            ],
-            folderpath + '/' + choose_tablename
-          );
-          new PowerShell().SavaFile(
-            dirpath,
-            'CommandsQuerys/tablename/Update.cs', choose_tablename,
-            [
-              [/_tablename_/gm, choose_tablename],
-              [/_Tablename_/gm, Choose_tablename],
-              [/@@@/gm, controller_namespace_prefix],
-              [/_ModelFieldCode_/gm, ModelFieldCode], [/_ModelFieldCodeRemoveKey_/gm, ModelFieldCodeRemoveKey],
-              [/_WriteFieldCode_/gm, WriteFieldCode], [/_WriteFieldCodeRemoveKey_/gm, WriteFieldCodeRemoveKey]
-            ],
-            folderpath + '/' + choose_tablename
-          ); */
 
           alertAndQuit('Create Template Success!');
 
