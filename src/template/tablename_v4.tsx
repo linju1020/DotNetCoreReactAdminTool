@@ -71,7 +71,8 @@ const useTxtData = {
 
 //分页列表页面
 export const _Tablename_List = () => {
-  const isSmall = useMediaQuery((theme: any) => theme.breakpoints.down('sm'));
+    const redirect = useRedirect();//奇怪问题：这句必须保留，去掉后下面Filters里的setFilters({}, displayedFilters);会失效
+    const isSmall = useMediaQuery((theme: any) => theme.breakpoints.down('sm'));
     // 筛选器模块
     // const Filters = () => {
     //   return (
@@ -87,7 +88,7 @@ export const _Tablename_List = () => {
         const { displayedFilters, filterValues, setFilters, hideFilter, refetch } = useListContext();
         if (isSmall) return null;
         if (props.context === "button") return null;
-        const onSubmit = (values: any) => { if (Object.keys(values).length > 0) { setFilters(values, displayedFilters); } else { setFilters({}, displayedFilters); } refetch(); };
+        const onSubmit = (values: any) => { if (Object.keys(values).length > 0) { setFilters(values, displayedFilters); } else { setFilters({}, displayedFilters); } };
         const resetFilter = () => { setFilters({}, displayedFilters); };
         return (
             <div>
