@@ -202,7 +202,7 @@ export const _Tablename_Edit = () => {
         );
     };
     return (
-        <Edit redirect={`/${resource}`} title={'编辑' + useTxtData.page.tableName} actions={<PostEditActions />}>
+        <Edit redirect={`/${resource}`} title={'编辑' + useTxtData.page.tableName} actions={<PostEditActions />} mutationMode='pessimistic'>
             <MyForm Edit={true} toolbar={<PostEditToolbar />} />
         </Edit>
     );
